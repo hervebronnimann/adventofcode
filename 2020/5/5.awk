@@ -14,7 +14,6 @@ BEGIN { minId = 128*8+8; maxId = 0; totId = 0; }
 }
 END { print "MinId: ", minId, " MaxId: ", maxId;  ## 89 (row 11, col 1) and 888 (row 111 col 0)
         ## FOR PART 2: round to 0 and 7 resp. mod 8
-      print "TotalId: ", totId;
       minId += 7; maxId -= 1;
       print "YourId: ", (maxId-minId+1)*(maxId+minId)/2 - totId;
 }
