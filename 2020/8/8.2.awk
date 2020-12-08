@@ -1,9 +1,9 @@
 function loop() { 
-  accumulator = 0; ln = 1; while (!(ln in seen) && ln != NR + 1) { accumulator += acc[ln]; seen[ln] = 1; ln = nx[ln]; }
-  delete seen; 
+  accumulator = 0; ln = 1;
+  while (!(ln in seen) && ln != NR + 1) { accumulator += acc[ln]; seen[ln] = 1; ln = nx[ln]; }
+  delete seen; #/ reset global map for next call
   return ln == NR + 1;
 }
-BEGIN { accumulator = 0; }
 /^acc/ { acc[NR] = $2; nx[NR] = NR + 1; }
 /^nop/ { acc[NR] = 0; nx[NR] = NR + 1; sw[NR] = NR + $2; nop[NR] = NR; }
 /^jmp/ { acc[NR] = 0; nx[NR] = NR + $2; sw[NR] = NR + $2; jmp[NR] = NR; } 
