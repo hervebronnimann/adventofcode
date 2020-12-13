@@ -1,0 +1,39 @@
+# INPUTS
+# 17,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,937,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,13,x,x,x,x,23,x,x,x,x,x,29,x,397,x,x,x,x,x,37,x,x,x,x,x,x,x,x,x,x,x,x,19
+b[1] = 17;  r[1] = 0
+b[7] = 41;  r[7] = 7
+b[2] = 13;  r[2] = 35
+b[3] = 19;  r[3] = 67
+b[4] = 23;  r[4] = 40
+b[5] = 29;  r[5] = 46
+b[6] = 37;  r[6] = 54
+b[8] = 397; r[8] = 48
+b[9] = 937; r[9] = 17
+n = 9
+
+# INPUTS
+# 7,13,x,x,59,x,31,19
+# b[1] = 7;  r[1] = 0
+# b[2] = 13;  r[2] = 1
+# b[3] = 59; r[3] = 4
+# b[4] = 31;  r[4] = 6
+# b[5] = 19;  r[5] = 7
+# n = 5
+
+scale = 0;
+
+t = 1; x = 1;
+for (i = 1; i <= n; ++i) {
+  m = r[i]; while (m > b[i]) m -= b[i];
+  while (t < x*b[i]) {
+    k = b[i]*(1+ ((t-1)/b[i]) );
+    if (k-t == m) break;
+    t += x;
+  }
+  x *= b[i];
+  print "Found ", t, " with increment ", x, "\n"
+}
+print "Time ", t, "\n" 
+for (i = 1; i <= n; ++i) {
+  print "bus ", b[i], " departing in ", i+t, "\n"
+}
