@@ -1,13 +1,7 @@
 /^[a-z_]*:/ { 
-  k = 0;
-  print $0;
-  for (i=2; i <= NF; ++i) {
-    if ($i == "or") continue;
-    ++k; split($i,r,"-");
-    min[NR,k] = r[1]; max[NR,k] = r[2];
-    # print name[NR] " has range " k, r[1] "," r[2]
-  }
-  next;
+  split($2,r,"-"); min1[NR] = r[1]; max1[NR] = r[2];
+  split($4,r,"-"); min2[NR] = r[1]; max2[NR] = r[2];
+  print $0; next;
 }
 /^$/ {
   print; next;
@@ -17,11 +11,10 @@
   all_valid = 1;
   for (n in field) {
     valid = 0;
-    for (j in field) {
-      for (t=1; (j,t) in min; ++t)
-        if (field[n] >= min[j,t] && field[n] <= max[j,t]) { valid=1; break; }
-      if (valid == 1) break;
-    }
+    for (j in field)
+      if ((field[n] >= min1[j] && field[n] <= max1[j]) || (field[n] >= min2[j] && field[n] <= max2[j])) {
+        valid=1; break;
+      }
     if (valid == 0) { all_valid = 0; break;}
   }
   if (all_valid == 1) print $0;

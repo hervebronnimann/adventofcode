@@ -2,14 +2,9 @@ BEGIN {
   split("97,61,53,101,131,163,79,103,67,127,71,109,89,107,83,73,113,59,137,139",ticket,",");
 }
 /^[a-z_]*:/ { 
-  k = 0; name[++n_field] = $1;
-  for (i=2; i <= NF; ++i) {
-    if ($i == "or") continue;
-    ++k; split($i,r,"-");
-    min[NR,k] = r[1]; max[NR,k] = r[2];
-    # print name[NR] " has range " k, r[1] "," r[2]
-  }
-  next;
+  split($2,r,"-"); min1[NR] = r[1]; max1[NR] = r[2];
+  split($4,r,"-"); min2[NR] = r[1]; max2[NR] = r[2];
+  name[++n_field] = $1; next;
 }
 /^$/ {
   print "FIELDS " n_field; next;
@@ -25,15 +20,11 @@ END {
     for (k=1; k <= n_field; ++k) {
       # print "Trying mapping " name[k] " for field " j;
       found = 1;
-      for (i=1; i <= n_ticket; ++i) {
-         valid = 0;
-	 for (t=1; (k,t) in min; ++t)
-           if (fields[i,j] >= min[k,t] && fields[i,j] <= max[k,t]) { valid = 1; break; }
-         if (valid == 0) {
-           # print "Exception row " i ": " fields[i,j] " not in " min[k,1] "," max[k,1] " nor " min[k,2] "," max[k,2];;
+      for (i=1; i <= n_ticket; ++i)
+         if (!( (fields[i,j] >= min1[k] && fields[i,j] <= max1[k]) || (fields[i,j] >= min2[k] && fields[i,j] <= max2[k]) )) {
+           # print "Exception row " i ": " fields[i,j] " not in " min1[k] "," max1[k] " nor " min2[k] "," max2[k];;
            found = 0; break;
          }
-      }
       candidates = candidates "\t" (found ? k : 0);
       if (found > 0) { num[j] += 1; c[j,k] = 1; }
     }

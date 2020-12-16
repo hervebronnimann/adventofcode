@@ -1,9 +1,6 @@
 /^[a-z_]*:/ { 
-  for (i=2; i <= NR; ++i) {
-    if ($i == "or") continue;
-    split($i,r,"-");
-    min[k] = r[1]; max[k] = r[2]; ++k;
-  }
+  ++k; split($2,r,"-"); min[k] = r[1]; max[k] = r[2];
+  ++k; split($4,r,"-"); min[k] = r[1]; max[k] = r[2];
   next;
 }
 /^$/ {
