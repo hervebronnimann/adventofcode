@@ -7,37 +7,47 @@ function popk() { return stackk[nk--]; }
 function pushj(j) { stackj[++nj] = j; }
 function popj() { return stackj[nj--]; }
 
-function rmatch_jk(n,l,r,j,k) {  # prefix of tok[l..r] match rule n, subrule j, element k
-  if (rule[n,j,k] == "a" || rule[n,j,k] == "b") {
-    if(verbose) print " ... trying "$0"["l","r"] rule_"n"["j","k"] = "rule[n,j,k]
-    if (l <= r && tok[l] == rule[n,j,k]) return l+1; else return 0;
-  }
-  if (l <= r) return rmatch(rule[n,j,k],l,r,0);
-  return 0;
-}
-function rmatch_j(n,l,r,j) {  # prefix of tok[l..r] match rule n, subrule j
-  if(verbose) print " ... match "$0"["l","r"]:"
+function generate_j(n,j) {
+  if(verbose) print"Generating rule " n " subrule " j; sjn[n,j] = 0;
   for (k=1; (n,j,k) in rule; ++k) {
-    if(verbose) print " ... trying "$0"["l","r"] rule_"n"["j","k"]"
-    pushk(k); l3 = rmatch_jk(n,l,r,j,k); k = popk();
-    if (l3 == 0) return 0;
-    if(verbose) print " ... match "$0"["l","r"] rule_"n"["j","k"] continues at "l3;
-    l = l3;
-  }
-  return l;
-}
-function rmatch(n,l,r,exact) {  # prefix or full string of tok[l..r] match rule n
-  if(verbose) print " ... match "$0"["l","r"]:"
-  for (j=1; (n,j,1) in rule; ++j) {
-    if(verbose) print " ... trying "$0"["l","r"] rule_"n"["j"]"
-    pushj(j); l2 = rmatch_j(n,l,r,j); j = popj();
-    if (l2 > 0) {
-      if(verbose) print " ... match "$0"["l","r"] rule_"n"["j"] ends at "l2;
-      if (exact==0 || l2 == r+1) return l2;
+    if (rule[n,j,k] == "a" || rule[n,j,k] == "b") {
+      if (sn[rule[n,j,k]] == 0) if(verbose) print"Generating " rule[n,j,k];
+      s[rule[n,j,k],1] = rule[n,j,k]; sn[rule[n,j,k]] = 1;
+    } else {
+      if (sn[rule[n,j,k]] == 0) {
+        pushk(k); generate(rule[n,j,k]); k = popk();
+      }
+    }
+    if (k == 1) {
+      sjn[n,j] = sn[rule[n,j,k]];
+      for (q=1; q <= sn[rule[n,j,k]]; ++q) sj[n,j,q] = s[rule[n,j,k],q];
+    } else {
+      for (m=1; m<=sjn[n,j]; ++m) temp[m] = sj[n,j,m];
+      sjn[n,j] = 0;
+      for (p=1; p<m; ++p)
+      for (q=1; q <= sn[rule[n,j,k]]; ++q) {
+        sj[n,j,++sjn[n,j]] = temp[p] s[rule[n,j,k],q]; # Cartesian product (appending) of s[rule[n,j,k]] with sj[n,j] so far
+      }
+      delete temp;
     }
   }
-  return 0;
+  if(verbose) print"Done generating rule " n " subrule " j " num:" sjn[n,j];
 }
+
+function generate(n) {
+  if(verbose) print"Generating " n; sn[n] = 0;
+  for (j=1; (n,j,1) in rule; ++j) {
+    if (sjn[n,j] == 0) {
+      pushj(j); generate_j(n,j); j = popj();
+    }
+    for (m=1; m<=sjn[n,j]; ++m) {
+      s[n,++sn[n]] = sj[n,j,m]; 
+      if(verbose) print"  ... " s[n,sn[n]];
+    }
+  }
+  print"Done generating " n " num:" sn[n];
+}
+
 /^[0-9]* :/ {
   j = 1; k = 1;
   for (i=3; i<=NF; ++i)
@@ -48,13 +58,14 @@ function rmatch(n,l,r,exact) {  # prefix or full string of tok[l..r] match rule 
       if(verbose) print "Rule_"$1"["j","k-1"]="$i;
     }
 }
+
+/^$/ {
+  # Build all possibilities as the index set of query.
+  generate(0);
+  for (m=1; m < sn[0]; ++m) query[s[0,m]] = 1;
+}
+
 /^[ab]+$/ {
-  split($0, tok, "");
-  r1 = length(tok);
-  l1 = rmatch(0, 1, r1,1);
-  if (l1 == r1+1) { ++sum; print $0 " matches rule 0"; }
-  else { # debugging...
-    print "No match "$0"[1,"r1"] ends at "l1;
-  }
+  if ($0 in query) { ++sum; }
 }
 END { print sum; }
