@@ -45,7 +45,7 @@ function generate(n) {
       if(verbose) print"  ... " s[n,sn[n]];
     }
   }
-  print"Done generating " n " num:" sn[n];
+  if(verbose) print"Done generating " n " num:" sn[n];
 }
 
 /^[0-9]* :/ {
@@ -60,12 +60,34 @@ function generate(n) {
 }
 
 /^$/ {
-  # Build all possibilities as the index set of query.
-  generate(0);
-  for (m=1; m < sn[0]; ++m) query[s[0,m]] = 1;
+  # Build all possibilities for 42 and 31 as the index set of query.
+  generate(42);
+  for (m=1; m <= sn[42]; ++m) { query42[s[42,m]] = 1; if(verbose) print "42: " s[42,m]; }
+  generate(31);
+  for (m=1; m <= sn[31]; ++m) { query31[s[31,m]] = 1; if(verbose) print "31: " s[31,m]; }
+  # CRUCIAL: notice that they ALL have length 8 chars, and there are 128 of each, and 42 and 31 are disjoint.
 }
 
 /^[ab]+$/ {
-  if ($0 in query) { ++sum; }
+  # 0 : 8 | 11 means that we only need to check chunks of 8 chars in input
+  if (length($0) % 8 == 0) {
+    match8 = 0; match11 = 0; pattern = "";
+    for (i=1; i<=length($0); i+=8)
+      if (substr($0,i,8) in query42) {
+        if (match11 == 0) match8 += 1; pattern = pattern " 42";
+      } else if (substr($0,i,8) in query31) {
+        match11 += 1; pattern = pattern " 31";
+      } else {
+        pattern = pattern " XX";
+      }
+    if (match8 > match11 && match8 + match11 == length($0)/8) {
+      ++sum; 
+      print "Match " match8 " and " match11 " for " $0 " [" pattern"]";
+    } else {
+      print "Mismatch " match8 " and " match11 " for " $0 " [" pattern"]";
+    }
+  } else {
+    print "No match for irregular length " $0;
+  }
 }
 END { print sum; }

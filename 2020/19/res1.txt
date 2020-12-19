@@ -1,6 +1,0 @@
-ababbb matches rule 0
-No match bababa[1,6] ends at 0
-abbbab matches rule 0
-No match aaabbb[1,6] ends at 0
-No match aaaabbb[1,7] ends at 7
-2

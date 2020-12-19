@@ -51,8 +51,8 @@ function rmatch(n,l,r) {  # prefix of tok[l..r] match rule n
 /^[ab]+$/ {
   split($0, tok, "");
   r1 = length(tok);
-  l1 = rmatch(0, 1, r1);
-  if (l1 == r1+1) { ++sum; print $0 " matches rule 0"; }
+  l1 = rmatch(target, 1, r1);
+  if (l1 == r1+1) { ++sum; print $0 " matches rule "target; }
   else { # debugging...
     print "No match "$0"[1,"r1"] ends at "l1;
   }
