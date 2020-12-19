@@ -8,10 +8,10 @@ function pushj(j) { stackj[++nj] = j; }
 function popj() { return stackj[nj--]; }
 
 function generate_j(n,j) {
-  if(verbose) print"Generating rule " n " subrule " j; sjn[n,j] = 0;
+  if(vverbose) print"Generating rule " n " subrule " j; sjn[n,j] = 0;
   for (k=1; (n,j,k) in rule; ++k) {
     if (rule[n,j,k] == "a" || rule[n,j,k] == "b") {
-      if (sn[rule[n,j,k]] == 0) if(verbose) print"Generating " rule[n,j,k];
+      if (sn[rule[n,j,k]] == 0) if(vverbose) print"Generating " rule[n,j,k];
       s[rule[n,j,k],1] = rule[n,j,k]; sn[rule[n,j,k]] = 1;
     } else {
       if (sn[rule[n,j,k]] == 0) {
@@ -31,21 +31,21 @@ function generate_j(n,j) {
       delete temp;
     }
   }
-  if(verbose) print"Done generating rule " n " subrule " j " num:" sjn[n,j];
+  if(vverbose) print"Done generating rule " n " subrule " j " num:" sjn[n,j];
 }
 
 function generate(n) {
-  if(verbose) print"Generating " n; sn[n] = 0;
+  if(vverbose) print"Generating " n; sn[n] = 0;
   for (j=1; (n,j,1) in rule; ++j) {
     if (sjn[n,j] == 0) {
       pushj(j); generate_j(n,j); j = popj();
     }
     for (m=1; m<=sjn[n,j]; ++m) {
       s[n,++sn[n]] = sj[n,j,m]; 
-      if(verbose) print"  ... " s[n,sn[n]];
+      if(vverbose) print"  ... " s[n,sn[n]];
     }
   }
-  if(verbose) print"Done generating " n " num:" sn[n];
+  if(vverbose) print"Done generating " n " num:" sn[n];
 }
 
 /^[0-9]* :/ {
@@ -55,7 +55,7 @@ function generate(n) {
       ++j; k = 1;
     } else {
       rule[$1,j,k++] = $i;
-      if(verbose) print "Rule_"$1"["j","k-1"]="$i;
+      if(vverbose) print "Rule_"$1"["j","k-1"]="$i;
     }
 }
 
@@ -66,21 +66,22 @@ function generate(n) {
   generate(31);
   for (m=1; m <= sn[31]; ++m) { query31[s[31,m]] = 1; if(verbose) print "31: " s[31,m]; }
   # CRUCIAL: notice that they ALL have length 8 chars, and there are 128 of each, and 42 and 31 are disjoint.
+  LEN = length(s[42,1]);
 }
 
 /^[ab]+$/ {
   # 0 : 8 | 11 means that we only need to check chunks of 8 chars in input
-  if (length($0) % 8 == 0) {
+  if (length($0) % LEN == 0) {
     match8 = 0; match11 = 0; pattern = "";
-    for (i=1; i<=length($0); i+=8)
-      if (substr($0,i,8) in query42) {
+    for (i=1; i<=length($0); i+=LEN)
+      if (substr($0,i,LEN) in query42) {
         if (match11 == 0) match8 += 1; pattern = pattern " 42";
-      } else if (substr($0,i,8) in query31) {
+      } else if (substr($0,i,LEN) in query31) {
         match11 += 1; pattern = pattern " 31";
       } else {
         pattern = pattern " XX";
       }
-    if (match8 > match11 && match8 + match11 == length($0)/8) {
+    if (match8 > match11 && match11 > 0 && match8 + match11 == length($0)/LEN) {
       ++sum; 
       print "Match " match8 " and " match11 " for " $0 " [" pattern"]";
     } else {
