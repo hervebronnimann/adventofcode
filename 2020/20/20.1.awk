@@ -1,5 +1,4 @@
 function reverse(x) { y=""; for(j=length(x);j>0;--j) y=y substr(x,j,1); return y; } 
-function ccw(n) { return n==4 ? 1 : n+1; }
 
 /^Tile/ { ++ntiles; current = $2; r = 0; }
 /^[.#]+$/ {
@@ -17,7 +16,7 @@ function ccw(n) { return n==4 ? 1 : n+1; }
   delete row; r = 0;
   # Insert tile borders into map
   for (i=1; i<=4; ++i) {
-    x = side[i,current]; mapid[x,++mapn[x]] = current; maps[x,mapn[x]] = i;
+    x = side[i,current]; mapid[x,++mapn[x]] = current;
     print "Tile " current " side " i " " x " matching " reverse(x)
   }
 }
@@ -27,7 +26,7 @@ END {
   for (x in mapn) {
     rx = reverse(x);
     if (mapn[x] == 1 && !(rx in mapn)) {
-      print "Found border " x " side " maps[x,1] " id " mapid[x,1];
+      print "Found border " x " id " mapid[x,1];
       ++bordern[mapid[x,1]];
     }
     if (mapn[x] > 2 || rx in mapn && mapn[rx] > 2) {
