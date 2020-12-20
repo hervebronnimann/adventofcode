@@ -22,23 +22,12 @@ function cw(n) { if (n<0) return -ccw(-n); return n==4 ? 1 : n+1; }
   }
 }
 
-function print_tile(id) {
-print "TILE " id
-  for (i=1; i<=LEN; ++i) print row[i,id]
-print
-}
-
 function rotate_tile_cw(id) {
-  print "Rotate cw " id
   for (i=1; i<=LEN; ++i) {
     newrow[i] = "";
-    for (j=1; j<=LEN; ++j) {
-      newrow[i] = newrow[i] substr(row[LEN-j+1,id],i,1);
-    }
+    for (j=1; j<=LEN; ++j) newrow[i] = newrow[i] substr(row[LEN-j+1,id],i,1);
   }
-  for (i=1; i<=LEN; ++i) {
-    row[i,id] = newrow[i];
-  }
+  for (i=1; i<=LEN; ++i) row[i,id] = newrow[i];
   delete newrow;
   # Also rotate sides and maps
   temp = side[1,id];
@@ -60,15 +49,15 @@ function remove_from_mapid(xx,id) {
 }
 
 function flip_tile_horiz(id) {
-  print "Flip horiz " id
   for (i=1; i<=LEN; ++i) {
     row[i,id] = reverse(row[i,id]);
   }
-  # Also flid sides and maps
+  # Also reverse horizontal sides
   xx = side[1,id]; rxx = reverse(xx); remove_from_mapid(xx,id);
   side[1,id] = rxx; mapid[rxx,++mapn[rxx]] = id;
   xx = side[3,id]; rxx = reverse(xx); remove_from_mapid(xx,id);
   side[3,id] = rxx; mapid[rxx,++mapn[rxx]] = id;
+  # Also need to flip the vertical sides while reversing them
   temp = side[4,id];
   xx = side[2,id]; rxx = reverse(xx); remove_from_mapid(xx,id);
   side[4,id] = rxx; mapid[rxx,++mapn[rxx]] = id; 
@@ -77,17 +66,17 @@ function flip_tile_horiz(id) {
 }
 
 function flip_tile_vert(id) {
-  print "Flip vert " id
   for (i=1; i<LEN-i+1; ++i) {
     temp = row[i,id];
     row[i,id] = row[LEN-i+1,id];
     row[LEN-i+1,id] = temp;
   }
-  # Also flid sides and maps
+  # Also reverse vertical sides
   xx = side[2,id]; rxx = reverse(xx); remove_from_mapid(xx,id);
   side[2,id] = rxx; mapid[rxx,++mapn[rxx]] = id;
   xx = side[4,id]; rxx = reverse(xx); remove_from_mapid(xx,id);
   side[4,id] = rxx; mapid[rxx,++mapn[rxx]] = id;
+  # Also need to flip the horizontal sides while reversing them
   temp = side[3,id];
   xx = side[1,id]; rxx = reverse(xx); remove_from_mapid(xx,id);
   side[3,id] = rxx; mapid[rxx,++mapn[rxx]] = id; 
@@ -96,7 +85,6 @@ function flip_tile_vert(id) {
 }
 
 function fill_image(r,c,id) {
-  print "Filling image " r " " c " from " id
   for (p = 1; p <= LEN; ++p)
   for (q = 1; q <= LEN; ++q)
     full[r*LEN+p-LEN,c*LEN+q-LEN] = substr(row[p,id],q,1);
@@ -119,7 +107,6 @@ function print_image() {
 }
 
 function rotate_image_cw() {
-  print "Rotate image cw "
   for (i=1; i<=LLEN; ++i)
   for (j=1; j<=LLEN; ++j) {
     newimage[i,j] = image[LLEN-j+1,i];
@@ -248,7 +235,8 @@ END {
     }
   }
 
-  print "FULL IMAGE " 
+  # Print fill image for debugging / make sure edges line properly.
+  print "\nFULL IMAGE " 
   print
   for (p = 1; p <= LEN*SIDE; ++p) {
     line[p] = "";
@@ -272,38 +260,23 @@ END {
   sm[3] = " #  #  #  #  #  #   "
   SM_MAXX = length(sm[1]); SM_MAXY = 3;
 
-  if (find_sea_monster() == 0) {
+  # Try all rotations, and all rotations of flipped image
+  for (k = 1; k <= 8; ++k) {
+    if (find_sea_monster() > 0) break; # this will also transform # into O
     rotate_image_cw();
-    if (find_sea_monster() == 0) {
-      rotate_image_cw();
-      if (find_sea_monster() == 0) {
-        rotate_image_cw();
-        if (find_sea_monster() == 0) {
-          flip_image_horiz();
-          if (find_sea_monster() == 0) {
-            rotate_image_cw();
-            if (find_sea_monster() == 0) {
-              rotate_image_cw();
-              if (find_sea_monster() == 0) {
-                rotate_image_cw();
-                if (find_sea_monster() == 0) {
-                  print "WTF? NO SEA MONSTERS?"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    if (k == 4) flip_image_horiz();
   }
+  if (k == 9) { print "WTF? NO SEA MONSTERS?"; exit; }
 
-  print
-  print "SEA MONSTERS " LLEN " x " LLEN
+  # Print the sea monsters
+  print "\nSEA MONSTERS " LLEN " x " LLEN
   print_image()
-  print find_sea_monster();
+  print "\nSea monsters " find_sea_monster();
+
+  # Count sea roughness
   res = 0;
   for (p = 1; p <= LLEN; ++p)
   for (q = 1; q <= LLEN; ++q)
     if (image[p,q] == "#") ++res;
-  print res;
+  print "Roughness: " res;
 }
