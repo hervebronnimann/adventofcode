@@ -3,20 +3,14 @@
     if ($i == "contains") {
       k = 0;
       for (++i; i <= NF; ++i) {
-        if (!($i in allergens)) { allergens[$i] = 1; ++n_allergens; print "Found allergen " $i; }
+        if (!($i in allergens)) { allergens[$i] = 1; ++n_allergens; }
         ag[$i,++nag[$i]] = NR;
       }
     } else {
-      if (!($i in foods)) { foods[$i] = 1; ++n_foods; print "Found food " $i; }
+      if (!($i in foods)) { foods[$i] = 1; ++n_foods; }
       food[NR,$i] = 1; ++foodn[NR];
     }
   }
-}
-
-function print_inter() {
-  line = ""
-  for (j=1; j<=n_inter; ++j) line = line " " inter[j];
-  print line;
 }
 
 function intersection(nfood) {
@@ -34,14 +28,13 @@ END {
     for (a in allergens) {
       # Invariant: name contains all the allergens determined so far, and fname contains their food names.
       if (name[a] != "") continue;
-      print "Trying allergen " a;
       # Populate foods with all that haven't been named, then winnow each food that contains allergen
       n_inter = 0;
       for (f in foods)
         if (!(f in fname))
-          { inter[++n_inter] = f; print "Trying with food " f; }
+          inter[++n_inter] = f;
       # Trim the foods that are not in food[f,*] from inter array, for each f in set ag[a].
-      for (i=1; i<=nag[a]; ++i) { intersection(ag[a,i]); print "Removing foods not in " ag[a,i] " remains " n_inter; print_inter() }
+      for (i=1; i<=nag[a]; ++i) intersection(ag[a,i]);
       # If only one food remains, then allergen is that food, we can iterate
       if (n_inter == 1) {
         print "Allergen " a " is " inter[1]
