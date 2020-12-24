@@ -1,7 +1,8 @@
-function white(i,j) { if (!((i,j) in tile)) check[i,j] = 0; }
 function black(i,j) { return (i,j) in tile && tile[i,j] == 1 ? 1 : 0; }
+function count_black() { res = 0; for (ij in tile) { split(ij,sep,SUBSEP); if (tile[sep[1],sep[2]]) ++res; }  return res; }
 function flip_tile(i,j) { if ((i,j) in tile) tile[i,j] = 1-tile[i,j]; else tile[i,j] = 1; }
-{ split($1,d,"");
+function queue_white(i,j) { if (!((i,j) in tile)) white[i,j] = 0; }
+/[ensw]+/ { split($1,d,"");
   x = 0; y = 0; dx = 2;
   for (i=1; i <= length($1); ++i) {
     if (d[i] == "s") { y-=1; dx = 1; }
@@ -14,25 +15,18 @@ function flip_tile(i,j) { if ((i,j) in tile) tile[i,j] = 1-tile[i,j]; else tile[
   flip_tile(x,y);
 }
 END {
-  res = 0;
-  for (ij in tile) {
-    split(ij,sep,SUBSEP);
-    if (tile[sep[1],sep[2]] == 1) ++res;
-  }
-  print "Day 0: " res
+  print "Day 0: " count_black();
   for (day=1; day <= 100 ; ++day) {
-    # enqueue all neighbors of black not in tile (they're white) into check array
+    # enqueue all neighbors of black not already in tile (they're white) into white array
     for (ij in tile) {
       split(ij,sep,SUBSEP); i = sep[1]; j = sep[2];
       if (tile[i,j] == 1) {
-        white(i-1,j-1); white(i+1,j-1); white(i-2,j); white(i+2,j); white(i-1,j+1); white(i+1,j+1);
+        queue_white(i-1,j-1); queue_white(i+1,j-1); queue_white(i-2,j); queue_white(i+2,j); queue_white(i-1,j+1); queue_white(i+1,j+1);
       }
     }
     # force color of check array as white
-    for (ij in check) {
-      split(ij,sep,SUBSEP); tile[sep[1],sep[2]] = 0;
-    }
-    delete check;
+    for (ij in white) { split(ij,sep,SUBSEP); tile[sep[1],sep[2]] = 0; }
+    delete white;
     # check all neighbors of existing tiles, enqueue all flips
     for (ij in tile) {
       split(ij,sep,SUBSEP); i = sep[1]; j = sep[2];
@@ -41,16 +35,9 @@ END {
       if (tile[i,j] == 0 && n == 2) flip[i,j] = 1;
     }
     # perform the flips all at once
-    for (ij in flip) {
-      split(ij,sep,SUBSEP); flip_tile(sep[1],sep[2]);
-    }
+    for (ij in flip) { split(ij,sep,SUBSEP); flip_tile(sep[1],sep[2]); }
     delete flip;
     # count for the day
-    res = 0;
-    for (ij in tile) {
-      split(ij,sep,SUBSEP);
-      if (tile[sep[1],sep[2]] == 1) ++res;
-    }
-    print "Day " day ": " res;
+    if (day <= 10 || day%10 == 0) print "Day " day ": " count_black();
   }
 }
