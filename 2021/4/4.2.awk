@@ -15,19 +15,13 @@ END {
     x = draws[k]
     print "Drawing " x
     for (b=1;b<=nboard; ++b) {
-      for (i=1;i<=5;++i) {
-        for (j=1;j<=5;++j) {
-          if (board[b,i,j]==x) {
-            ++board[b,i,0]
-            ++board[b,0,j]
-            board[b,i,j]=" "
-          }
-        }
-      }
-      for (j=1;j<=5;++j)
-        if (board[b,0,j]==5) end(b,x);
       for (i=1;i<=5;++i)
-        if (board[b,i,0]==5) end(b,x)
+      for (j=1;j<=5;++j)
+        if (board[b,i,j]==x) {
+          ++board[b,i,0]; ++board[b,0,j]; board[b,i,j]=" "
+        }
+      for (j=1;j<=5;++j) if (board[b,0,j]==5) end(b,x);
+      for (i=1;i<=5;++i) if (board[b,i,0]==5) end(b,x)
     }
   }
 }
