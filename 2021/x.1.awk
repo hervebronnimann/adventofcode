@@ -1,6 +1,12 @@
 # General utilities
+function abs(x) { return x<0 ? -x:x }
 function min(x,y) { return x<y ? x : y }
 function max(x,y) { return x>y ? x : y }
+# Working with arrays
+# Working with associative maps
+function sample(x) { for (_i in x) return _i; }
+function minpos(x) { _imin=sample(x); for (_i in x) if (x[_i]<x[_imin]) _imin=_i; return _imin }
+function maxpos(x) { _imax=sample(x); for (_i in x) if (x[_i]>x[_imax]) _imax=_i; return _imax }
 function sum(b) { _sum=0; for (_x in b) _sum+=b[_x]; return _sum } 
 # Working with strings
 function reverse(str) { _str=""; for(_j=length(str);_j>0;--_j) _str=_str substr(str,_j,1); return _str }
