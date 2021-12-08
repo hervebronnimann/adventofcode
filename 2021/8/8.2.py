@@ -1,3 +1,5 @@
+import numpy as np
+
 def solve(inp,outp):
   fmap={}; rmap={}
   def sortString(x): return "".join(sorted(x))
@@ -33,13 +35,8 @@ def solve(inp,outp):
 input=[]
 output=[]
 with open('input.txt') as f:
-  for lline in f:
-    line=lline.split()
-    input.append([line[i] for i in range(0,10)]);
-    output.append([line[i] for i in range(11,15)]);
+  for line in f:
+    input.append(line.split('|')[0].split())
+    output.append(line.split('|')[1].split())
 
-n=0
-for k in range(0,len(input)):
-  # print(solve(input[k],output[k]));
-  n+=solve(input[k],output[k])
-print(n)
+print(np.sum([solve(input[k],output[k]) for k in range(0,len(input))]))
