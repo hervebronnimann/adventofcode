@@ -1,34 +1,30 @@
-def digit(x): return ord(x)-ord('0')
+neighbors=[(i,j) for i in [-1,0,1] for j in [-1,0,1] if i!=0 or j!=0]
+def grid(m,n): return [(i,j) for i in range(n) for j in range(m)]
+def valid(i,j,b): return i>=0 and i<len(b) and j>=0 and j<len(b[0])
 
 with open("input.txt") as f:
-  b=[[digit(x) for x in line.rstrip('\n')] for line in f]
+  b=[[ord(x)-ord('0') for x in line.rstrip('\n')] for line in f]
 
-print(b)
-
-neighbors=[(i,j) for i in [-1,0,1] for j in [-1,0,1] if i!=0 or j!=0]
-grid=[(i,j) for i in range(10) for j in range(10)]
-
-def flash(b,s,i,j):
+def flash(i,j,b):
+  if b[i][j]!=10: return 0
   for u,v in neighbors:
-    if i+u<0 or i+u>9 or j+v<0 or j+v>9: continue
-    b[i+u][j+v] += 1
-    if b[i+u][j+v]==10: s.add( (i+u,j+v) )
+    if valid(i+u,j+v,b) and b[i+u][j+v]<10:
+      b[i+u][j+v] += 1
+  b[i][j] = 99  # To prevent flashing twice
+  return 1
 
-flashes = 0
+g=grid(len(b),len(b[0]))
+total = 0
 for iter in range(100):
-  s=set({})
-  for i,j in grid:
-    b[i][j]+=1
-    if b[i][j]==10: s.add( (i,j) )
-  f = len(s)
+  for i,j in g: b[i][j]+=1
+  flashes = 0;
   while True:
-    s2=set({})
-    for i,j in s: flash(b,s2,i,j)
-    if len(s2)==0: break
-    f += len(s2); s=s2
-  for i,j in grid:
+     f=sum([flash(i,j,b) for i,j in g])
+     if f==0: break
+     flashes += f
+  for i,j in g:
     if b[i][j]>9: b[i][j]=0
-  print("Iteration %d: %d flashes" % (iter,f))
-  flashes += f
+  print("Iteration %d: %d flashes" % (iter,flashes))
+  total += flashes
 
-print(flashes)
+print(total)
