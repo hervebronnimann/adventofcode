@@ -6,7 +6,7 @@ with open("input.txt") as f:
 print(b)
 
 neighbors=[(i,j) for i in [-1,0,1] for j in [-1,0,1] if i!=0 or j!=0]
-grid=[(i,j) for i in range(0,10) for j in range(0,10)]
+grid=[(i,j) for i in range(10) for j in range(10)]
 
 def flash(b,s,i,j):
   for u,v in neighbors:
@@ -15,7 +15,7 @@ def flash(b,s,i,j):
     if b[i+u][j+v]==10: s.add( (i+u,j+v) )
 
 flashes = 0
-for iter in range(0,100):
+for iter in range(100):
   s=set({})
   for i,j in grid:
     b[i][j]+=1
@@ -28,7 +28,7 @@ for iter in range(0,100):
     f += len(s2); s=s2
   for i,j in grid:
     if b[i][j]>9: b[i][j]=0
-  print("Iteration %d: %d flashes\n" % (iter,f))
+  print("Iteration %d: %d flashes" % (iter,f))
   flashes += f
 
 print(flashes)
