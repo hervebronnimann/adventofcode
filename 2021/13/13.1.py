@@ -18,8 +18,7 @@ with open("input.txt") as f:
     print("Iter: %d dots:%d" % (iter,len(dots)))
 
 x,y = zip(*dots.keys())
-mat=[[('#' if (i,j) in dots.keys() else '.')
-      for i in range(max(x)+1)]
-      for j in range(max(y)+1)]
-for i in range(max(y)+1):
-  print("".join(mat[i]))
+for l in [[('#' if (i,j) in dots.keys() else '.')
+           for i in range(max(x)+1)]
+           for j in range(max(y)+1)]:
+  print("".join(l))
