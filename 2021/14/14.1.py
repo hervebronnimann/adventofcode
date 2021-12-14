@@ -25,7 +25,7 @@ for i in range(10):
   poly=mutate(poly)
   # print("Iter %d: %s" %(i+1,poly))
 
-count=defaultdict(lambda: 0)
+count=defaultdict(int)
 for x in list(poly): count[x] += 1
 print(max(count.values()) - min(count.values()))
 

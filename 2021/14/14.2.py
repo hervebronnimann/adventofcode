@@ -1,14 +1,13 @@
-import copy
 from collections import defaultdict
 
 poly=""
 rules={}
-bigrams=defaultdict(lambda: 0)
+bigrams=defaultdict(int)
 
 with open('input.txt') as f:
   poly=next(f).strip()
   for i in range(len(poly)-1):
-    bigrams[poly[i]+poly[i+1]] += 1
+    bigrams[poly[i:i+2]] += 1
   next(f)
   for l in f:
     u,v = l.strip().split(' -> ')[0:2]
@@ -16,20 +15,19 @@ with open('input.txt') as f:
 
 def mutate(poly):
   global bigrams
-  bigrams2=defaultdict(lambda: 0)
-  for b in bigrams.keys():
-    u,v = list(b)
+  bigrams2=defaultdict(int)
+  for b,k in bigrams.items():
     if b in rules.keys():
-      bigrams2[u+rules[b]] += bigrams[b]
-      bigrams2[rules[b]+v] += bigrams[b]
+      bigrams2[b[0]+rules[b]] += k
+      bigrams2[rules[b]+b[1]] += k
     else:
-      bigrams2[b] += bigrams[b]
-  bigrams=copy.deepcopy(bigrams2)
+      bigrams2[b] += k
+  bigrams=bigrams2
     
 for i in range(40): mutate(poly)
 
-count=defaultdict(lambda: 0)
+count=defaultdict(int)
 count[poly[-1]]=1
-for x in list(bigrams): count[x[0]] += bigrams[x]
+for x,y in bigrams.items(): count[x[0]] += y
 print(max(count.values()) - min(count.values()))
 
