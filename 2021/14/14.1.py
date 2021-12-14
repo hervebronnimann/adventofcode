@@ -1,9 +1,8 @@
-import copy
+from collections import defaultdict
 
 poly=""
 rules={}
 with open('input.txt') as f:
-# with open('input.txt') as f:
   poly=next(f).strip()
   next(f)
   for l in f:
@@ -26,10 +25,7 @@ for i in range(10):
   poly=mutate(poly)
   # print("Iter %d: %s" %(i+1,poly))
 
-count={}
-for x in list(poly):
-  if x not in count.keys(): count[x]=0
-  count[x] += 1
-# print (count)
+count=defaultdict(lambda: 0)
+for x in list(poly): count[x] += 1
 print(max(count.values()) - min(count.values()))
 
