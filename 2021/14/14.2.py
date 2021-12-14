@@ -5,7 +5,7 @@ rules={}
 bigrams=defaultdict(int)
 
 with open('input.txt') as f:
-  poly=next(f).strip()
+  poly=next(f).strip()+'.'
   for i in range(len(poly)-1):
     bigrams[poly[i:i+2]] += 1
   next(f)
@@ -27,7 +27,6 @@ def mutate(poly):
 for i in range(40): mutate(poly)
 
 count=defaultdict(int)
-count[poly[-1]]=1
 for x,y in bigrams.items(): count[x[0]] += y
 print(max(count.values()) - min(count.values()))
 

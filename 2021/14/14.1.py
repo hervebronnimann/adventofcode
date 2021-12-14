@@ -3,7 +3,7 @@ from collections import defaultdict
 poly=""
 rules={}
 with open('input.txt') as f:
-  poly=next(f).strip()
+  poly=next(f).strip()+'.'
   next(f)
   for l in f:
     u,v = l.strip().split(' -> ')[0:2]
@@ -17,8 +17,7 @@ def mutate(poly):
     if poly[i]+poly[i+1] in rules.keys():
       # print("Apply rule "+(poly[i]+poly[i+1])+" -> "+ rules[poly[i]+poly[i+1]])
       result += rules[poly[i]+poly[i+1]]
-  result += poly[-1]
-  return result
+  return result+'.'
     
 print(poly)
 for i in range(10):
@@ -26,6 +25,6 @@ for i in range(10):
   # print("Iter %d: %s" %(i+1,poly))
 
 count=defaultdict(int)
-for x in list(poly): count[x] += 1
+for x in list(poly)[0:-1]: count[x] += 1
 print(max(count.values()) - min(count.values()))
 
