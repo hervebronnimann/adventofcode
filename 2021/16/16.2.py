@@ -14,12 +14,12 @@ def decode_packet(str,cur=0):
   typ = str[cur:cur+3]; cur += 3
   # print('version:%s(%d) type:%s(%d) cur:%d' % (ver,btod(ver),typ,btod(typ), cur))
   if typ == '100':
-    value = 0
-    while True:
-      value = value*16 + btod(str[cur+1:cur+5])
+    value = btod(str[cur+1:cur+5])
+    while str[cur]=='1':
       cur += 5
-      if str[cur-5]=='0': break
+      value = value*16 + btod(str[cur+1:cur+5])
     # print('value(%d)' % value)
+    cur += 5
     return cur,value
   len_typeID = 'len' if str[cur]=='0' else 'num'
   xlen = 16 if str[cur]=='0' else 12
