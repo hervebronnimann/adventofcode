@@ -19,8 +19,7 @@ def decode_packet(str,cur=0):
       cur += 5
       value = value*16 + btod(str[cur+1:cur+5])
     # print('value(%d)' % value)
-    cur += 5
-    return cur,value
+    return cur+5,value
   len_typeID = 'len' if str[cur]=='0' else 'num'
   xlen = 16 if str[cur]=='0' else 12
   nlen = btod(str[cur+1:cur+xlen])
