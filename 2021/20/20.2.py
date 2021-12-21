@@ -3,12 +3,6 @@ from functools import reduce
 def btod(str): return reduce(lambda x,y: 2*x+int(y), str, 0)
 def atos(array): return reduce(lambda x,y: x+y, array, '')
 
-
-def p(s):
-  print('   ------')
-  for l in s: print(l)
-  print('   ------')
-
 def pad(s,c,p):
   for i in range(len(s)):
      for j in range(p): s[i]=c+s[i]+c
@@ -32,13 +26,13 @@ def solve(filename):
     for i in range(25):
       # First iteration, padding with '.'
       m=len(s); n=len(s[0])
-      pad(s,'.',2); # p(s)
+      pad(s,'.',2);
       s=decode(s,m,n,pattern)
       # Next iteration, this time padding with c, not '.'
       m=len(s); n=len(s[0])
-      pad(s,c,2); # p(s)
+      pad(s,c,2);
       s=decode(s,m,n,pattern);
-      pad(s,'.',2); # p(s)
+      pad(s,'.',2)
     count=reduce(lambda x,y: x+y.count('#'), s, 0)
     print('SOLVED: %d for %s' % (count, filename))
 
