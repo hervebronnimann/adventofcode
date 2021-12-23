@@ -56,7 +56,6 @@ def neighbors(board):
     cost = abs(d-10-h)+1 # horizontal plus one move down
     if board[d+10]==0: d += 10; cost += 1   # slide into bottom of cell
     b2=list(board); b2[d]=b2[h]; b2[h]=0
-    # print("Found move for %d from hallway %d to dest %d (cost %d)" % (b2[d], h, d, cost*b2[d]))
     yield tuple(b2),cost*b2[d]
   for d in topdest:
     ''' Moving a piece to the hallway. '''
@@ -71,13 +70,11 @@ def neighbors(board):
       if h not in hall: continue
       if board[h]!=0: break
       b2=list(board); b2[h]=b2[d]; b2[d]=0;
-      # print("Found move for %d from dest %d to hallway %d (cost %d)" % (b2[h], d, h, (cost+abs(d-10-h))*b2[h]))
       yield tuple(b2), (cost+abs(d2-10-h))*b2[h]
     for h in range(d2-10,12):
       if h not in hall: continue
       if board[h]!=0: break
       b2=list(board); b2[h]=b2[d]; b2[d]=0;
-      # print("Found move for %d from dest %d to hallway %d (cost %d)" % (b2[h], d, h, (cost+abs(h-d-10))*b2[h]))
       yield tuple(b2), (cost+abs(h-d2+10))*b2[h]
 
 print_board("Start: ",iboard,0)
