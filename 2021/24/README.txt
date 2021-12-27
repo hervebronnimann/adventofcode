@@ -87,12 +87,12 @@ i j:0   1   2   3   4   5   6   7    8   9   10  11  12 13
 When that matrix has an (i,i) that is greater than 8 (or less than -8), it's
 impossible for w[i] and w[j] to satisfy the comparison, so we always append.
 
-Looking at i=0, it's guaranteed we append for i=0 (because w[0]!=c6[0]==13).
-Looking at i=1, j=0, it's guaranteed we append for i=1 (because w[0]!=w[0]+28).
+Looking at i=0, it's guaranteed we append for i=0 (because w[0]!=c6[0]==13 since w is in range 1..9 only).
+Looking at i=1, j=0, it's guaranteed we append for i=1 (because w[1]!=w[0]+28, since w is in range 1..9 only).
 Likewise, we append at i=2, and i=3.
 
 Now for i=4, we pop (remember?) so the top of z is w[2]+c16[2]=w[2]+4.
-We don't append if w[4]==w[2]-4, but we could append otherwise.
+We don't append if w[4]==w[2]-4 (since c6[4]==-8)], but we could append otherwise.
 
 For i=5, we pop again (the value at the top was either w[4]+c16[4], or w[2]+4).
 So we either compare w[5] to w[2]-6 if we did append at i=4, or to w[1]+6
