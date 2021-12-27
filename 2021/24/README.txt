@@ -1,6 +1,6 @@
 Rewritten the input looks like (from left to right, one column at a time):
 
-    COL 1     COL 2     COL 3     COL 4     COL 5     COL 6     COL 7     COL 8     COL 9     COL 10    COL 11    COL R12   COL R13   COL R14
+    COL 1     COL 2     COL 3     COL 4     COL 5     COL 6     COL 7     COL 8     COL 9     COL 10    COL 11    COL 12    COL 13    COL 14
 1.  inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w     inp w
 2.  mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0   mul x 0
 3.  add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z   add x z
@@ -56,8 +56,8 @@ So we can rewrite the code above as treating z in base 26:
   def decode26(w):
     z=[]
     for i in range(0,14):
-      if c5[i]==26: z.pop() // pop happens exactly 7 times out of 14
       ztop = 0 if len(z)==0 else z[-1]
+      if c5[i]==26: z.pop() // pop happens exactly 7 times out of 14
       if w[i]!=c6[i]+ztop: z.append(w[i]+c16[i])
     return len(z)==0
 
@@ -139,8 +139,8 @@ So here's the whole code I come up with:
     ns=len(scenarios)
     for s in range(ns):
       sc=scenarios[s]
-      if len(sc.z)>0 and c5[i]==26: sc.z.pop()
       j=-1 if len(sc.z)==0 else sc.z[-1]
+      if len(sc.z)>0 and c5[i]==26: sc.z.pop()
       eq_possibly=(j<0 and 1<=c6[i] and c6[i]<=9) or (j>=0 and abs(c6[i]+c16[j])<9)
       if eq_possibly: # possibly equality is true, in which case don't append
         sc2=sc.clone(); sc2.add_cond(i,j,eq=True)
@@ -152,295 +152,19 @@ So here's the whole code I come up with:
     for s in scenarios:
       print(s)
 
-At the end, we get scenarios ending with a stack z that is always non-empty, containing some w[j]+c16[j].
-So all of these have to be 0.  But that's not possible.
+And after correcting the mistake (I had the pop before capturing j, in a previous analysis! drove me crazy!)
+now I get the following output:
 
-And after looking carefully at the code, I find the one scenario which could possibly append but did not
-is i==5, j==1, and c6[5]+c16[1]==27...  Looking again in the above matrix, I see entries larger than 26.
-But I don't know what that means or if it's an indication that w ought to be more than a single digit.
-I maybe should reread the Day 24.  But I don't see it...  FYI, here's the output 
+Scenario [] with 7 appends and conditions ['w[4]==w[3]+6', 'w[5]==w[2]-6', 'w[7]==w[6]-2', 'w[9]==w[8]-1', 'w[11]==w[10]+0', 'w[12]==w[1]+8', 'w[13]==w[0]+4']
 
-[1, 1, 1, 1, 26, 26, 1, 26, 1, 26, 1, 26, 26, 26]
-[13, 13, 10, 15, -8, -10, 11, -3, 14, -4, 14, -5, -8, -11]
-[15, 16, 4, 14, 1, 5, 1, 3, 3, 7, 5, 13, 3, 10]
+Which means
+* w[3] must be <=3 (otherwise no solution for w[4]), and max is w[3]==3 then w[4]=9.
+* w[5] must be <=3 (because w[2]<=9), and max w[5]==3 then w[2]=9.
+* w[7] must be <=7 , and max is w[7]==7 then w[6]=9
+* w[9] must be <=8 , and max is w[9]==8 then w[8]=9
+* w[11]==w[10] and both could be up to 9
+* w[12]==9 and w[1]==1
+* w[0] must be <=5 (otherwise no solution for w[13]), and max is w[0]==5 then w[13]==9.
 
-After step i=0: 1 scenarios (could not pop)
-Scenario [0] with 1 appends and conditions []
-
-After step i=1: 1 scenarios (could not pop)
-Scenario [0, 1] with 2 appends and conditions []
-
-After step i=2: 1 scenarios (could not pop)
-Scenario [0, 1, 2] with 3 appends and conditions []
-
-After step i=3: 1 scenarios (could not pop)
-Scenario [0, 1, 2, 3] with 4 appends and conditions []
-
-After step i=4: 2 scenarios (could pop)
-Scenario [0, 1, 2, 4] with 5 appends and conditions []
-Scenario [0, 1, 2] with 4 appends and conditions ['w[4]==w[2]-4']
-
-After step i=5: 4 scenarios (could pop)
-Scenario [0, 1, 2, 5] with 6 appends and conditions []
-Scenario [0, 1, 5] with 5 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2] with 5 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1] with 4 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-
-After step i=6: 4 scenarios (could not pop)
-Scenario [0, 1, 2, 5, 6] with 7 appends and conditions []
-Scenario [0, 1, 5, 6] with 6 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 6] with 6 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 6] with 5 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-This scenario will prevent a solution: Scenario [0, 1] with 5 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-
-After step i=7: 7 scenarios (could pop)
-Scenario [0, 1, 2, 5, 7] with 8 appends and conditions []
-Scenario [0, 1, 5, 7] with 7 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7] with 7 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7] with 6 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5] with 7 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5] with 6 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2] with 6 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-
-After step i=8: 7 scenarios (could not pop)
-Scenario [0, 1, 2, 5, 7, 8] with 9 appends and conditions []
-Scenario [0, 1, 5, 7, 8] with 8 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7, 8] with 8 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7, 8] with 7 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5, 8] with 8 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5, 8] with 7 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2, 8] with 7 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-
-After step i=9: 14 scenarios (could pop)
-Scenario [0, 1, 2, 5, 7, 9] with 10 appends and conditions []
-Scenario [0, 1, 5, 7, 9] with 9 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7, 9] with 9 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7, 9] with 8 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5, 9] with 9 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5, 9] with 8 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2, 9] with 8 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-Scenario [0, 1, 2, 5, 7] with 9 appends and conditions ['w[9]==w[7]-1']
-Scenario [0, 1, 5, 7] with 8 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 7] with 8 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1']
-Scenario [0, 1, 7] with 7 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 5] with 8 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 5] with 7 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 2] with 7 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0']
-
-After step i=10: 14 scenarios (could not pop)
-Scenario [0, 1, 2, 5, 7, 9, 10] with 11 appends and conditions []
-Scenario [0, 1, 5, 7, 9, 10] with 10 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7, 9, 10] with 10 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7, 9, 10] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5, 9, 10] with 10 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5, 9, 10] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2, 9, 10] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-Scenario [0, 1, 2, 5, 7, 10] with 10 appends and conditions ['w[9]==w[7]-1']
-Scenario [0, 1, 5, 7, 10] with 9 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 7, 10] with 9 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1']
-Scenario [0, 1, 7, 10] with 8 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 5, 10] with 9 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 5, 10] with 8 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 2, 10] with 8 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0']
-
-After step i=11: 28 scenarios (could pop)
-Scenario [0, 1, 2, 5, 7, 9, 11] with 12 appends and conditions []
-Scenario [0, 1, 5, 7, 9, 11] with 11 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7, 9, 11] with 11 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7, 9, 11] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5, 9, 11] with 11 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5, 9, 11] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2, 9, 11] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-Scenario [0, 1, 2, 5, 7, 11] with 11 appends and conditions ['w[9]==w[7]-1']
-Scenario [0, 1, 5, 7, 11] with 10 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 7, 11] with 10 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1']
-Scenario [0, 1, 7, 11] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 5, 11] with 10 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 5, 11] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 2, 11] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0']
-Scenario [0, 1, 2, 5, 7, 9] with 11 appends and conditions ['w[11]==w[9]+2']
-Scenario [0, 1, 5, 7, 9] with 10 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 7, 9] with 10 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2']
-Scenario [0, 1, 7, 9] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 5, 9] with 10 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2']
-Scenario [0, 1, 5, 9] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 9] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 5, 7] with 10 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 5, 7] with 9 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 2, 7] with 9 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 7] with 8 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 2, 5] with 9 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0']
-Scenario [0, 1, 5] with 8 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0']
-Scenario [0, 1, 2] with 8 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1']
-
-After step i=12: 56 scenarios (could pop)
-Scenario [0, 1, 2, 5, 7, 9, 12] with 13 appends and conditions []
-Scenario [0, 1, 5, 7, 9, 12] with 12 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7, 9, 12] with 12 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7, 9, 12] with 11 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5, 9, 12] with 12 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5, 9, 12] with 11 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2, 9, 12] with 11 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-Scenario [0, 1, 2, 5, 7, 12] with 12 appends and conditions ['w[9]==w[7]-1']
-Scenario [0, 1, 5, 7, 12] with 11 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 7, 12] with 11 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1']
-Scenario [0, 1, 7, 12] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 5, 12] with 11 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 5, 12] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 2, 12] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0']
-Scenario [0, 1, 2, 5, 7, 12] with 12 appends and conditions ['w[11]==w[9]+2']
-Scenario [0, 1, 5, 7, 12] with 11 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 7, 12] with 11 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2']
-Scenario [0, 1, 7, 12] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 5, 12] with 11 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2']
-Scenario [0, 1, 5, 12] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 12] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 5, 12] with 11 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 5, 12] with 10 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 2, 12] with 10 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 12] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 2, 12] with 10 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0']
-Scenario [0, 1, 12] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0']
-Scenario [0, 1, 12] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1']
-Scenario [0, 1, 2, 5, 7, 9] with 12 appends and conditions ['w[12]==w[9]-1']
-Scenario [0, 1, 5, 7, 9] with 11 appends and conditions ['w[4]==w[2]-4', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 7, 9] with 11 appends and conditions ['w[5]==w[2]-6', 'w[12]==w[9]-1']
-Scenario [0, 1, 7, 9] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 5, 9] with 11 appends and conditions ['w[7]==w[5]+2', 'w[12]==w[9]-1']
-Scenario [0, 1, 5, 9] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 9] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 5, 7] with 11 appends and conditions ['w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 5, 7] with 10 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 7] with 10 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 7] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 5] with 10 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[12]==w[5]-3']
-Scenario [0, 1, 5] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[12]==w[5]-3']
-Scenario [0, 1, 2] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[12]==w[2]-4']
-Scenario [0, 1, 2, 5, 7] with 11 appends and conditions ['w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 5, 7] with 10 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 7] with 10 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 7] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 5] with 10 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[12]==w[5]-3']
-Scenario [0, 1, 5] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[12]==w[5]-3']
-Scenario [0, 1, 2] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2', 'w[12]==w[2]-4']
-Scenario [0, 1, 2, 5] with 10 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[5]-3']
-Scenario [0, 1, 5] with 9 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[5]-3']
-Scenario [0, 1, 2] with 9 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[2]-4']
-Scenario [0, 1] with 8 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[1]+8']
-Scenario [0, 1, 2] with 9 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[12]==w[2]-4']
-Scenario [0, 1] with 8 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[12]==w[1]+8']
-Scenario [0, 1] with 8 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1', 'w[12]==w[1]+8']
-
-After step i=13: 112 scenarios (could pop)
-Scenario [0, 1, 2, 5, 7, 9, 13] with 14 appends and conditions []
-Scenario [0, 1, 5, 7, 9, 13] with 13 appends and conditions ['w[4]==w[2]-4']
-Scenario [0, 1, 2, 7, 9, 13] with 13 appends and conditions ['w[5]==w[2]-6']
-Scenario [0, 1, 7, 9, 13] with 12 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6']
-Scenario [0, 1, 2, 5, 9, 13] with 13 appends and conditions ['w[7]==w[5]+2']
-Scenario [0, 1, 5, 9, 13] with 12 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2']
-Scenario [0, 1, 2, 9, 13] with 12 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1']
-Scenario [0, 1, 2, 5, 7, 13] with 13 appends and conditions ['w[9]==w[7]-1']
-Scenario [0, 1, 5, 7, 13] with 12 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 7, 13] with 12 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1']
-Scenario [0, 1, 7, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1']
-Scenario [0, 1, 2, 5, 13] with 12 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 5, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0']
-Scenario [0, 1, 2, 5, 7, 13] with 13 appends and conditions ['w[11]==w[9]+2']
-Scenario [0, 1, 5, 7, 13] with 12 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 7, 13] with 12 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2']
-Scenario [0, 1, 7, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 5, 13] with 12 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2']
-Scenario [0, 1, 5, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2']
-Scenario [0, 1, 2, 5, 13] with 12 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 5, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1']
-Scenario [0, 1, 2, 5, 7, 13] with 13 appends and conditions ['w[12]==w[9]-1']
-Scenario [0, 1, 5, 7, 13] with 12 appends and conditions ['w[4]==w[2]-4', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 7, 13] with 12 appends and conditions ['w[5]==w[2]-6', 'w[12]==w[9]-1']
-Scenario [0, 1, 7, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 5, 13] with 12 appends and conditions ['w[7]==w[5]+2', 'w[12]==w[9]-1']
-Scenario [0, 1, 5, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[12]==w[9]-1']
-Scenario [0, 1, 2, 5, 13] with 12 appends and conditions ['w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 5, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[12]==w[5]-3']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[12]==w[5]-3']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[12]==w[2]-4']
-Scenario [0, 1, 2, 5, 13] with 12 appends and conditions ['w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 5, 13] with 11 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2', 'w[12]==w[7]-5']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[12]==w[5]-3']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[12]==w[5]-3']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2', 'w[12]==w[2]-4']
-Scenario [0, 1, 2, 13] with 11 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[5]-3']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[5]-3']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[2]-4']
-Scenario [0, 13] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[1]+8']
-Scenario [0, 1, 13] with 10 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[12]==w[2]-4']
-Scenario [0, 13] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[12]==w[1]+8']
-Scenario [0, 13] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1', 'w[12]==w[1]+8']
-Scenario [0, 1, 2, 5, 7, 9] with 13 appends and conditions ['w[13]==w[9]-4']
-Scenario [0, 1, 5, 7, 9] with 12 appends and conditions ['w[4]==w[2]-4', 'w[13]==w[9]-4']
-Scenario [0, 1, 2, 7, 9] with 12 appends and conditions ['w[5]==w[2]-6', 'w[13]==w[9]-4']
-Scenario [0, 1, 7, 9] with 11 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[13]==w[9]-4']
-Scenario [0, 1, 2, 5, 9] with 12 appends and conditions ['w[7]==w[5]+2', 'w[13]==w[9]-4']
-Scenario [0, 1, 5, 9] with 11 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[13]==w[9]-4']
-Scenario [0, 1, 2, 9] with 11 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[13]==w[9]-4']
-Scenario [0, 1, 2, 5, 7] with 12 appends and conditions ['w[9]==w[7]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 5, 7] with 11 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 2, 7] with 11 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 7] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 2, 5] with 11 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[13]==w[5]-6']
-Scenario [0, 1, 5] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[13]==w[5]-6']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[13]==w[2]-7']
-Scenario [0, 1, 2, 5, 7] with 12 appends and conditions ['w[11]==w[9]+2', 'w[13]==w[7]-8']
-Scenario [0, 1, 5, 7] with 11 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2', 'w[13]==w[7]-8']
-Scenario [0, 1, 2, 7] with 11 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2', 'w[13]==w[7]-8']
-Scenario [0, 1, 7] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2', 'w[13]==w[7]-8']
-Scenario [0, 1, 2, 5] with 11 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[13]==w[5]-6']
-Scenario [0, 1, 5] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[13]==w[5]-6']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2', 'w[13]==w[2]-7']
-Scenario [0, 1, 2, 5] with 11 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[13]==w[5]-6']
-Scenario [0, 1, 5] with 10 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[13]==w[5]-6']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[13]==w[1]+5']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[13]==w[1]+5']
-Scenario [0, 1] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1', 'w[13]==w[1]+5']
-Scenario [0, 1, 2, 5, 7] with 12 appends and conditions ['w[12]==w[9]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 5, 7] with 11 appends and conditions ['w[4]==w[2]-4', 'w[12]==w[9]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 2, 7] with 11 appends and conditions ['w[5]==w[2]-6', 'w[12]==w[9]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 7] with 10 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[12]==w[9]-1', 'w[13]==w[7]-8']
-Scenario [0, 1, 2, 5] with 11 appends and conditions ['w[7]==w[5]+2', 'w[12]==w[9]-1', 'w[13]==w[5]-6']
-Scenario [0, 1, 5] with 10 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[12]==w[9]-1', 'w[13]==w[5]-6']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[12]==w[9]-1', 'w[13]==w[2]-7']
-Scenario [0, 1, 2, 5] with 11 appends and conditions ['w[9]==w[7]-1', 'w[12]==w[7]-5', 'w[13]==w[5]-6']
-Scenario [0, 1, 5] with 10 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[12]==w[7]-5', 'w[13]==w[5]-6']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[12]==w[7]-5', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[12]==w[7]-5', 'w[13]==w[1]+5']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[12]==w[5]-3', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[12]==w[5]-3', 'w[13]==w[1]+5']
-Scenario [0, 1] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[12]==w[2]-4', 'w[13]==w[1]+5']
-Scenario [0, 1, 2, 5] with 11 appends and conditions ['w[11]==w[9]+2', 'w[12]==w[7]-5', 'w[13]==w[5]-6']
-Scenario [0, 1, 5] with 10 appends and conditions ['w[4]==w[2]-4', 'w[11]==w[9]+2', 'w[12]==w[7]-5', 'w[13]==w[5]-6']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[5]==w[2]-6', 'w[11]==w[9]+2', 'w[12]==w[7]-5', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[11]==w[9]+2', 'w[12]==w[7]-5', 'w[13]==w[1]+5']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[12]==w[5]-3', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[11]==w[9]+2', 'w[12]==w[5]-3', 'w[13]==w[1]+5']
-Scenario [0, 1] with 9 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[11]==w[9]+2', 'w[12]==w[2]-4', 'w[13]==w[1]+5']
-Scenario [0, 1, 2] with 10 appends and conditions ['w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[5]-3', 'w[13]==w[2]-7']
-Scenario [0, 1] with 9 appends and conditions ['w[4]==w[2]-4', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[5]-3', 'w[13]==w[1]+5']
-Scenario [0, 1] with 9 appends and conditions ['w[5]==w[2]-6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[2]-4', 'w[13]==w[1]+5']
-Scenario [0] with 8 appends and conditions ['w[4]==w[2]-4', 'w[5]==w[1]+6', 'w[9]==w[7]-1', 'w[11]==w[7]-2', 'w[12]==w[1]+8', 'w[13]==w[0]+4']
-Scenario [0, 1] with 9 appends and conditions ['w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[12]==w[2]-4', 'w[13]==w[1]+5']
-Scenario [0] with 8 appends and conditions ['w[4]==w[2]-4', 'w[7]==w[5]+2', 'w[9]==w[5]+1', 'w[11]==w[5]+0', 'w[12]==w[1]+8', 'w[13]==w[0]+4']
-Scenario [0] with 8 appends and conditions ['w[5]==w[2]-6', 'w[7]==w[2]+1', 'w[9]==w[2]+0', 'w[11]==w[2]-1', 'w[12]==w[1]+8', 'w[13]==w[0]+4']
+Overall, the maximum solution is w=[5,1,9,3,9,3,9,7,9,8,9,9,9,9] or 51939397989999.
+And the minumum solution (for part 2) is [1,1,7,1,7,1,3,1,2,1,1,1,9,5] or 11717131211195.
