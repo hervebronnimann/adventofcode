@@ -36,7 +36,7 @@ class Scenario:
     return s
   def conditionss(self):
     for i,j,eq in self.conds:
-      yield f'w[{i}]{"=" if eq else "!"}=' + (f'{c6[i]}' if j==-1 else f'{c6[i]+c16[j]}+w[{j}]')
+      yield f'w[{i}]{"=" if eq else "!"}=' + (f'{c6[i]}' if j==-1 else f'w[{j}]{c6[i]+c16[j]:+}')
   def __str__(self):
     return f'Scenario {self.z} with {self.appends} appends and conditions {[c for c in self.conditionss()]}'
 
@@ -56,7 +56,7 @@ for i in range(14):
     # the other scenario is append i to z
     sc.add_digit(i);
     # if possibly: sc.add_cond(i,j,eq=False)
-  print(f'After step i={i}: {len(scenarios)} scenarios (could{"" if c5[i]==26 else " not"} pop)')
+  print(f'\nAfter step i={i}: {len(scenarios)} scenarios (could{"" if c5[i]==26 else " not"} pop)')
   for s in scenarios:
     print(s)
 
