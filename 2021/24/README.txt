@@ -107,7 +107,7 @@ Also when comparing to the top of the stack, we can make a decision if c6[i]+c16
 At the end we can report the scenarios for which the stack is empty.
 
 One thing is for sure, we don't want to append in the last instruction, but
-that means w[13] is either w[12]-8, or w[11]+5 if we didn't append for i=12, etc.
+that means w[13] is either w[12]-8, or w[11]+2 if we didn't append for i=12, or w[10]-6, etc.
 We don't know the last condition unless we know the whole scenario before hand.
 
 So here's the whole code I come up with:
