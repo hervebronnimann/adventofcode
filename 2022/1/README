@@ -1,0 +1,7 @@
+I did my solution in awk first.  (1.[12].awk)
+
+Then I did it in python again, after watching some hints from Jaehyun. (1.[12].py)
+
+Then I did it my way inspired by Jae's solution.  (1.[12]j.py)
+
+I got to internalize the python tools and list/collection framework. So much more powerful, even though wasteful.
