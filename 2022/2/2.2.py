@@ -2505,7 +2505,7 @@ def next(x): return { 'A':'B', 'B':'C', 'C':'A' }[x]
 def prev(x): return { 'A':'C', 'B':'A', 'C':'B' }[x]
 def score(x): return { 'A':1, 'B':2, 'C':3 }[x]
 def guess(l): return score({ 'X':prev(l[0]), 'Y':l[0], 'Z':next(l[0]) }[l[2]])
-def draws(l): return 1 if l[2]=='Y' else 0
-def wins(l):  return 1 if l[2]=='Z' else 0
+def draws(l): return l[2]=='Y'
+def wins(l):  return l[2]=='Z'
 
-print(sum(list(map(guess,lines))) + 3 * sum(list(map(draws,lines))) + 6 * sum(list(map(wins,lines))))
+print(sum(mul*sum(map(x,lines)) for (x,mul) in zip([guess,draws,wins],[1,3,6])))

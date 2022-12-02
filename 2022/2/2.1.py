@@ -2502,7 +2502,7 @@ A Y
 """.strip().split("\n");
 
 def score(l): return { 'X':1, 'Y':2, 'Z':3 }[l[2]]
-def draws(l): return 1 if { 'A':'X', 'B':'Y', 'C':'Z' }[l[0]]==l[2] else 0
-def wins(l):  return 1 if { 'A':'Y', 'B':'Z', 'C':'X' }[l[0]]==l[2] else 0
+def draws(l): return { 'A':'X', 'B':'Y', 'C':'Z' }[l[0]]==l[2]
+def wins(l):  return { 'A':'Y', 'B':'Z', 'C':'X' }[l[0]]==l[2]
 
-print(sum(list(map(score,lines))) + 3 * sum(list(map(draws,lines))) + 6 * sum(list(map(wins,lines))))
+print(sum(mul*sum(map(x,lines)) for (x,mul) in zip([score,draws,wins],[1,3,6])))
