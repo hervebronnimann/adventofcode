@@ -536,4 +536,4 @@ def move(n,f,t):
 for (n,f,t) in moves:
   move(n,f,t)
 
-print(''.join([ stacks[i][-1] for i in range(1,len(stacks))]))
+print(''.join([stacks[i][-1] for i in range(1,len(stacks))]))
