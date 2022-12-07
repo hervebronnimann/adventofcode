@@ -1100,25 +1100,21 @@ for c in cmd:
   x = c.strip().split("\n")
   x0 = x[0].strip().split(" ")
   if x0[0] == "cd":
-    # print(f"Chdir {curdir} to {x0[1]}")
     if x0[1] == "/":
        curdir = [ '/' ]
     elif x0[1] == "..":
        curdir.pop()
     else:
        curdir.append(x0[1])
-       # print(f"New dir {'/'.join(curdir)}")
        dirs['/'.join(curdir)].add(x0[1])
   elif x[0]== "ls":
     cur = '/'.join(curdir)
     for y in x[1:]:
       z = y.strip().split(" ");
       if z[0] == "dir":
-        # print(f"lsdir {cur}: subdir {z[1]}")
         dirs[cur].add(z[1])
       else:
         sz = int(z[0])
-        # print(f"lsdir {cur}: {z[1]} size {sz}")
         d = deepcopy(curdir)
         while len(d) > 0:
           size['/'.join(d)] += sz
@@ -1126,7 +1122,4 @@ for c in cmd:
 
 free = 30000000 - (70000000 - size['/'])
 print(f'Need to free {free}')
-for x,s in size.items():
-  if s >= free: print(f"Dir {x}: size {s}")
-
 print(min([(s if s>=free else 1000000000) for x,s in size.items()]))

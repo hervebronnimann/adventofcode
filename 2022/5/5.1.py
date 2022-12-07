@@ -11,6 +11,7 @@ stacks = [
  list("GLNWFSPQ"),
  list("MZR"),
  list("MCLGVRT")
+reverse("SLFZDBRH")
 ## [S]                 [T] [Q]        
 ## [L]             [B] [M] [P]     [T]
 ## [F]     [S]     [Z] [N] [S]     [R]
