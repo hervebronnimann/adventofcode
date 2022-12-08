@@ -100,32 +100,20 @@ grid = [ list(x) for x in """
 121313142330141112135522531401154344545521012501566652210433310564254034403545252414443110303020313
 """.strip().split('\n') ]
 
-# print(grid)
-
 m = len(grid)
 n = len(grid[0])
 
-def visible(grid,i,j):
-  x = grid[i][j]
-  left, right, top, bottom = True, True, True, True
-  for k in range(i):
-    if grid[k][j] >= x:
-      left = False; break
-  for k in range(i+1,n):
-    if grid[k][j] >= x:
-      right = False; break
-  for k in range(j):
-    if grid[i][k] >= x:
-      top = False; break
-  for k in range(j+1,m):
-    if grid[i][k] >= x:
-      bottom = False; break
-  return left or right or top or bottom
+def visible(grid,i,j,di,dj,d):
+  for k in range(1,d+1):
+    if grid[i+k*di][j+k*dj] >= grid[i][j]:
+      return False
+  return True
 
 count = 0  
 for i in range(n):
   for j in range(m):
-    if visible(grid,i,j):
-      count += 1
+    for di,dj,d in [(-1,0,i), (1,0,n-i-1), (0,-1,j), (0,1,m-j-1)]:
+      if visible(grid,i,j,di,dj,d):
+        count += 1; break
 
 print(count)

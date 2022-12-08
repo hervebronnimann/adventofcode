@@ -101,31 +101,21 @@ grid = [ list(x) for x in """
 121313142330141112135522531401154344545521012501566652210433310564254034403545252414443110303020313
 """.strip().split('\n') ]
 
-# print(grid)
-
 m = len(grid)
 n = len(grid[0])
 
-def score(grid,i,j):
-  x = grid[i][j]
-  left, right, top, bottom = j, m-j-1, i, n-i-1
-  for k in range(i-1,-1,-1):
-    if grid[k][j] >= x:
-      top = i-k; break
-  for k in range(i+1,n):
-    if grid[k][j] >= x:
-      bottom = k-i; break
-  for k in range(j-1,-1,-1):
-    if grid[i][k] >= x:
-      left = j-k; break
-  for k in range(j+1,m):
-    if grid[i][k] >= x:
-      right = k-j; break
-  return left * right * top * bottom
+def score(grid,i,j,di,dj,d):
+  for k in range(1,d+1):
+    if grid[i+k*di][j+k*dj] >= grid[i][j]:
+      return k
+  return d
 
-count = 0
+max_count=0
 for i in range(n):
   for j in range(m):
-    count = max(count, score(grid,i,j))
+    count = 1
+    for di,dj,d in [(-1,0,i), (1,0,n-i-1), (0,-1,j), (0,1,m-j-1)]:
+      count *= score(grid,i,j,di,dj,d)
+    max_count=max(count,max_count)
 
-print(count)
+print(max_count)
