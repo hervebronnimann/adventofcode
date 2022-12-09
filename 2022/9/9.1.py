@@ -2005,18 +2005,12 @@ X = [ (x.split(' ')[0],int(x.split(' ')[1])) for x in lines]
 
 move={'R':(1,0),'U':(0,1),'L':(-1,0),'D':(0,-1)}
 
+def sign(x): return 1 if x>0 else -1 if x<0 else 0
+
 def move_tail(hx,hy,tx,ty):
-  if tx==hx:
-    if ty==hy-2: ty=hy-1                     # tail moves down
-    elif ty==hy+2: ty=hy+1                   # tail moves up
-  elif ty==hy:
-    if tx==hx-2: tx=hx-1                     # tail moves left
-    elif tx==hx+2: tx=hx+1                   # tail moves right
-  elif abs(tx-hx)>1 or abs(ty-hy)>1:
-    if hx>tx and hy>ty: tx,ty=tx+1,ty+1      # tail moves right,up
-    elif hx>tx and hy<ty: tx,ty=tx+1,ty-1    # tail moves right,down
-    elif hx<tx and hy>ty: tx,ty=tx-1,ty+1    # tail moves left,up
-    elif hx<tx and hy<ty: tx,ty=tx-1,ty-1    # tail moves left,down
+  if abs(hx-tx)>1 or abs(hy-ty)>1:
+    tx += sign(hx-tx)
+    ty += sign(hy-ty)
   return tx,ty
 
 hx,hy,tx,ty = (0,0,0,0)
