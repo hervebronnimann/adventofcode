@@ -2006,34 +2006,30 @@ X = [ (x.split(' ')[0],int(x.split(' ')[1])) for x in lines]
 move={'R':(1,0),'U':(0,1),'L':(-1,0),'D':(0,-1)}
 
 def move_tail(hx,hy,tx,ty):
-  # moves tail, return new tail position
   if tx==hx:
-    if ty==hy-2: ty=hy-1
-    elif ty==hy+2: ty=hy+1
+    if ty==hy-2: ty=hy-1                     # tail moves down
+    elif ty==hy+2: ty=hy+1                   # tail moves up
   elif ty==hy:
-    if tx==hx-2: tx=hx-1
-    elif tx==hx+2: tx=hx+1
+    if tx==hx-2: tx=hx-1                     # tail moves left
+    elif tx==hx+2: tx=hx+1                   # tail moves right
   elif abs(tx-hx)>1 or abs(ty-hy)>1:
-    if hx>tx and hy>ty: tx,ty=tx+1,ty+1
-    elif hx>tx and hy<ty: tx,ty=tx+1,ty-1
-    elif hx<tx and hy>ty: tx,ty=tx-1,ty+1
-    elif hx<tx and hy<ty: tx,ty=tx-1,ty-1
+    if hx>tx and hy>ty: tx,ty=tx+1,ty+1      # tail moves right,up
+    elif hx>tx and hy<ty: tx,ty=tx+1,ty-1    # tail moves right,down
+    elif hx<tx and hy>ty: tx,ty=tx-1,ty+1    # tail moves left,up
+    elif hx<tx and hy<ty: tx,ty=tx-1,ty-1    # tail moves left,down
   return tx,ty
 
 hx=[0 for i in range(10)]
 hy=[0 for i in range(10)]
-
 tailset=set()
 tailset.add((0,0))
 
 for d,n in X:
+  dx,dy = move[d]
   for i in range(n):
-    dx,dy = move[d]
-    ox,oy = hx[0],hy[0]
     hx[0] += dx; hy[0] += dy
     for k in range(1,10):
       hx[k],hy[k] = move_tail(hx[k-1],hy[k-1],hx[k],hy[k])
-    print((hx[9],hy[9]))
     tailset.add((hx[9],hy[9]))
 
 print(len(tailset))
