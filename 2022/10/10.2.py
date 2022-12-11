@@ -155,11 +155,10 @@ i,j = 0,0
 CRT=[[0 for j in range(40)] for i in range(6)]
 
 for x in Xs:
-  CRT[i][j] = '#' if abs(j-x)<=1 else '.'
+  CRT[i][j] = '##' if abs(j-x)<=1 else '  '
   j += 1
   if j == 40: i += 1; j = 0
   
-print(Xs)
 for i in range(6):
   print(''.join(CRT[i]))
 
