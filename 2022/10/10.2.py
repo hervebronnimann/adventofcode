@@ -1,3 +1,5 @@
+from itertools import accumulate
+
 lines = """
 addx 1
 noop
@@ -139,27 +141,10 @@ noop
 noop
 """.strip().split('\n');
 
-X = 1
-Xs = []
-
-for c in lines:
-  if c == "noop":
-    Xs.append(X)
-  elif c.split(' ')[0] == "addx":
-    V = int(c.split(' ')[1])
-    Xs.append(X)
-    Xs.append(X)
-    X += V
-  
-i,j = 0,0
-CRT=[[0 for j in range(40)] for i in range(6)]
-
-for x in Xs:
-  CRT[i][j] = '##' if abs(j-x)<=1 else '  '
-  j += 1
-  if j == 40: i += 1; j = 0
-  
-for i in range(6):
-  print(''.join(CRT[i]))
+Vs = [1] + [ 0 if c=='noop' else int(c.split(' ')[1]) for c in lines]
+Vs = list(accumulate(Vs))
+Xs = [1] + sum([[v] if c=='noop' else [v,v] for c,v in zip(lines,Vs)], [])
+CRT=[[ '##' if abs(j-Xs[i*40+j+1])<=1 else '  ' for j in range(40)] for i in range(6)]
+print('\n'.join([''.join(l) for l in CRT]))
 
 # EHPZPJGL
