@@ -56,21 +56,7 @@ Monkey 7:
     If false: throw to monkey 1
 """.strip().split('\n');
 
-# PARSE THE INPUT [GOSH]
-
-op={
-'new = old * 19': lambda x:x*19,
-'new = old + 6': lambda x:x+6,
-'new = old + 3': lambda x:x+3,
-'new = old * 3': lambda x:x*3,
-'new = old + 2': lambda x:x+2,
-'new = old + 1': lambda x:x+1,
-'new = old + 5': lambda x:x+5,
-'new = old + 4': lambda x:x+4,
-'new = old + 8': lambda x:x+8,
-'new = old * 7': lambda x:x*7,
-'new = old * old': lambda x:x*x,
-}
+# PARSE
 
 monkey = 0
 items = []
@@ -79,41 +65,49 @@ div = []
 dest_true = []
 dest_false = []
 
-for l in lines:
-  l = l.strip()
-  if 'Monkey' in l: monkey = int(l.split(' ')[1][:-1])
-  elif 'items' in l:
-    items.append(list(map(int,l.split(': ')[1].split(', ')))); print(items[-1])
-  elif 'Operation' in l: ops.append(op[l.split(': ')[1]])
-  elif 'Test' in l: div.append(int(l.split(' ')[3]))
-  elif 'true:' in l: dest_true.append(int(l.split(' ')[5]))
-  elif 'false:' in l: dest_false.append(int(l.split(' ')[5]))
-  else:
-    monkey += 1
-    if len(l)>0: print(f'parse error {l}')
+def parse(x):
+  if x == 'old + old': return lambda x: x + x
+  if x == 'old * old': return lambda x: x * x
+  if 'old + ' in x: return lambda x,y=int(x.split(' ')[2]): x + y
+  if ' + old' in x: return lambda y,x=int(x.split(' ')[0]): x + y
+  if 'old * ' in x: return lambda x,y=int(x.split(' ')[2]): x + y
+  if ' * old' in x: return lambda y,x=int(x.split(' ')[0]): x + y
+  raise(Exception(f"Can't parse {x}"))
+
+for x in lines:
+  if 'items:' in x: items.append(list(map(int,x.split(': ')[1].split(', '))))
+  elif 'Operation:' in x: ops.append(parse(x.split('new = ')[1]))
+  elif 'Test' in x: div.append(int(x.split('by ')[1]))
+  elif 'If true:' in x: dest_true.append(int(x.split('monkey ')[1]))
+  elif 'If false:' in x: dest_false.append(int(x.split('monkey ')[1]))
 
 print(items)
 print(div)
 print(dest_true)
 print(dest_false)
 
+# PLAY 20 ROUNDS
+
+N = len(items)
 inspections = [0 for i in range(len(items))]
+verbose = True
 
 for round in range(20):
 
-  for monkey in range(len(items)):
+  for monkey in range(N):
     for item in items[monkey]:
-      inspections[monkey] += 1
       item = ops[monkey](item) // 3
       if item % div[monkey] == 0:
         items[dest_true[monkey]].append(item)
       else:
         items[dest_false[monkey]].append(item)
+    inspections[monkey] += len(items[monkey])
     items[monkey] = []
 
-  print(f'After round {round+1}')
-  for monkey in range(len(items)):
-    print(f'  Monkey {monkey}: {", ".join(map(str,items[monkey]))}')
+  if verbose:
+    print(f'After round {round+1}')
+    for monkey in range(len(items)):
+      print(f'  Monkey {monkey}: {", ".join(map(str,items[monkey]))}')
 
 inspections = sorted(inspections,reverse=True)
 print(inspections[0]*inspections[1])
