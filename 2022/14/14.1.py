@@ -9,26 +9,10 @@ N=0
 grid = defaultdict(lambda: '.')
 grid[(N,M0)] = '+'
 
-def vdraw(j,si,ei):
-  if si<ei:
-    while si<=ei:
-      grid[(si,j)]='#'; si += 1
-  else:
-    while si>=ei:
-      grid[(si,j)]='#'; si -= 1
-
-def hdraw(i,sj,ej):
-  if sj<ej:
-    while sj<=ej:
-      grid[(i,sj)]='#'; sj += 1
-  else:
-    while sj>=ej:
-      grid[(i,sj)]='#'; sj -= 1
-
 def draw(s,e):
-  if s[0]==e[0]: vdraw(s[0],s[1],e[1])
-  elif s[1]==e[1]: hdraw(s[1],s[0],e[0])
-  else:  raise('non horizontal or vertical move')
+  for i in range(min(s[1],e[1]),max(s[1],e[1])+1):
+    for j in range(min(s[0],e[0]),max(s[0],e[0])+1):
+      grid[(i,j)]='#'
 
 def pict(N,M0,M1):
   return '\n'.join([''.join([grid[(i,j)] for j in range(M0,M1+1)]) for i in range(N+1)])

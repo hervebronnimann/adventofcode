@@ -50,20 +50,18 @@ abccccccccccccccccccccaaaaacccaaaaaaaaaaaacccccccccaacaacccccccccccccccccccccccc
 """.strip().split('\n')]
 
 print(grid)
-# S=(20,0)
+# E=(2,5)  # For the example
 E=(20,72)
-# E=(2,5)
 
-N = len(grid)
-M = len(grid[0])
 INF = 9999999999
 
-def dijkstra(S):
-  flood = [[INF for j in range(M)] for i in range(N)]
-  flood[S[0]][S[1]] = 0
+def dijkstra(grid,S,E):
+  N = len(grid)
+  M = len(grid[0])
+  dist = [[0 if (i,j)==S else INF for j in range(M)] for i in range(N)]
   iters=0
   q=[S]
-  while flood[E[0]][E[1]]==INF:
+  while dist[E[0]][E[1]]==INF:
     iters += 1
     q1 = []
     if len(q) == 0: return INF
@@ -71,15 +69,17 @@ def dijkstra(S):
       for dx,dy in [(-1,0),(1,0),(0,-1),(0,1)]:
         if i+dy<0 or i+dy>=N: continue
         if j+dx<0 or j+dx>=M: continue
-        if flood[i+dy][j+dx]==INF and grid[i+dy][j+dx] <= 1 + grid[i][j]:
-          flood[i+dy][j+dx] = flood[i][j]+1
+        if dist[i+dy][j+dx]==INF and grid[i+dy][j+dx] <= 1 + grid[i][j]:
+          dist[i+dy][j+dx] = dist[i][j]+1
           q1.append((i+dy,j+dx))
     q = q1
   return iters
 
+N = len(grid)
+M = len(grid[0])
 Ss = []
 for i in range(N):
   for j in range(M):
     if grid[i][j]==0: Ss.append((i,j))
 
-print(min([dijkstra(S) for S in Ss]))
+print(min([dijkstra(grid,S,E) for S in Ss]))

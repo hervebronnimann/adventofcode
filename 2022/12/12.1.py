@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 def height(x):
   if x == 'S': return 0
   if x == 'E': return 25
@@ -50,16 +48,15 @@ abccccccccccccccccccccaaaaacccaaaaaaaaaaaacccccccccaacaacccccccccccccccccccccccc
 """.strip().split('\n')]
 
 print(grid)
-S=(20,0)
-E=(20,72)
+S=(20,0)    # HACK - too lazy to program it
+E=(20,72)   # HACK - too lazy to program it
 
 INF = 9999999999
 
 def dijkstra(grid,S,E):
   N = len(grid)
   M = len(grid[0])
-  dist = [[INF for j in range(M)] for i in range(N)]
-  dist[S[0]][S[1]] = 0
+  dist = [[0 if (i,j)==S else INF for j in range(M)] for i in range(N)]
   iters=0
   q=[S]
   while dist[E[0]][E[1]]==INF:
