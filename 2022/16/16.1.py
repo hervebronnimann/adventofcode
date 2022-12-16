@@ -1,7 +1,6 @@
 from collections import defaultdict
 from functools import lru_cache
 
-
 # lines = open("example.txt").read().strip().split('\n');
 lines = open("input.txt").read().strip().split('\n');
 
@@ -13,12 +12,10 @@ dest = dict(zip(nodes,dest))
 
 # Compacting the non-zero nodes, by all-pairs
 
-INF = 10000
 Dist={}
 for x in nodes:
   Dist[(x,x)]=0
-  for z in dest[x]:
-    Dist[(x,z)]=1
+  for z in dest[x]: Dist[(x,z)]=1
 for n in range(len(nodes)):
   Dist2=dict(Dist)
   for x,y1 in Dist.keys():
@@ -26,6 +23,7 @@ for n in range(len(nodes)):
       if y1!=y2: continue
       if (x,z) in Dist2: Dist2[(x,z)] = min(Dist2[(x,z)],Dist[(x,y1)]+Dist[(y2,z)])
       else: Dist2[(x,z)] = Dist[(x,y1)]+Dist[(y2,z)]
+  if Dist==Dist2: break
   Dist=Dist2
 
 # now solving problem
@@ -36,18 +34,18 @@ for n,f in zip(nodes,flow):
   if f!=0: Nodes.append(n); Flow[n]=f
 
 print(Nodes)
-print(Dist)
+# print(Dist)
 
 @lru_cache
-def explore(minute,node,open_nodes):
-  if minute<=1 or len(open_nodes)==len(Nodes): return 0
+def explore(minute,node,open_nodes,num_open_nodes):
+  if minute<=1 or num_open_nodes==len(Nodes): return 0
   ans = 0
   for x in Nodes:
-    if x != node and x not in open_nodes:
-      ans = max(ans,explore(minute-1-Dist[(node,x)],x,open_nodes.union({node})))
+    if x != node and (2**Nodes.index(x))&open_nodes==0:
+      ans = max(ans,explore(minute-1-Dist[(node,x)],x,open_nodes|(2**Nodes.index(node)),num_open_nodes+1))
   return (minute-1)*Flow[node] + ans
 
 ans=0
 for x in Nodes:
-  ans=max(ans,explore(30-Dist[('AA',x)],x,frozenset()))
+  ans=max(ans,explore(30-Dist[('AA',x)],x,0,0))
 print(ans)
