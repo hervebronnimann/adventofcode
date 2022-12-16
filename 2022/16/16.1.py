@@ -1,7 +1,9 @@
 from collections import defaultdict
+from functools import lru_cache
 
-lines = open("example.txt").read().strip().split('\n');
-# lines = open("input.txt").read().strip().split('\n');
+
+# lines = open("example.txt").read().strip().split('\n');
+lines = open("input.txt").read().strip().split('\n');
 
 nodes = [ x.split(' ')[1] for x in lines ]
 flow  = [ int(x.split(' ')[5]) for x in lines ]
@@ -33,24 +35,19 @@ Flow={}
 for n,f in zip(nodes,flow):
   if f!=0: Nodes.append(n); Flow[n]=f
 
-Dist2={}
-for x,y in Dist:
-  if x=='AA' or x in Nodes:
-    if y in Nodes:
-      Dist2[(x,y)]=Dist[(x,y)]
 print(Nodes)
-print(Dist2)
+print(Dist)
 
-# Recursive search - explodes and does not even finish on the example...
+@lru_cache
+def explore(minute,node,open_nodes):
+  if minute<=1 or len(open_nodes)==len(Nodes): return 0
+  ans = 0
+  for x in Nodes:
+    if x != node and x not in open_nodes:
+      ans = max(ans,explore(minute-1-Dist[(node,x)],x,open_nodes.union({node})))
+  return (minute-1)*Flow[node] + ans
 
-def explore(minute,node,ans,open_nodes):
-  if minute<=0:
-    return ans
-  if node in Nodes and node not in open_nodes:
-    ans=max(ans,explore(minute-1,node,ans+(minute-1)*Flow[node],open_nodes+[node]))
-  if len(open_nodes)<len(Nodes):
-    for x in Nodes:
-      if x != node: ans = max(ans,explore(minute-Dist[(node,x)],x,ans,open_nodes))
-  return ans
-
-print(explore(30,'AA',0,[]))
+ans=0
+for x in Nodes:
+  ans=max(ans,explore(30-Dist[('AA',x)],x,frozenset()))
+print(ans)
