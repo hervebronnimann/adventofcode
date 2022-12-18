@@ -26,7 +26,7 @@ for n in range(len(nodes)):
   if Dist==Dist2: break
   Dist=Dist2
 
-# and indexing with non-zero flow nodes from 1 to N
+# and re-indexing with non-zero flow nodes from 1 to N
 
 index=0
 Nodes=[]
@@ -34,8 +34,8 @@ Index={'AA':0}
 Flow={}
 for n,f in zip(nodes,flow):
   if f!=0: index += 1; Nodes.append(index); Flow[index]=f; Index[n]=index
-print(Nodes)
-print(Flow)
+# print(Nodes)
+# print(Flow)
 
 IDist = [[0 for _ in range(index+1)] for _ in range(index+1)]
 for n1,f1 in zip(nodes,flow):
@@ -43,11 +43,11 @@ for n1,f1 in zip(nodes,flow):
   for n2,f2 in zip(nodes,flow):
     if n2!='AA' and f2==0: continue
     IDist[Index[n1]][Index[n2]] = Dist[(n1,n2)]
-print(IDist)
+# print(IDist)
 
 # now solving problem
 
-# @lru_cache
+# Turns out lru_cache slows things down @lru_cache
 def explore(minute,node,open_nodes,num_open_nodes):
   if minute<=1 or num_open_nodes==len(Nodes): return 0
   ans = 0

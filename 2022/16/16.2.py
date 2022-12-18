@@ -9,7 +9,7 @@ flow  = [ int(x.split(' ')[5]) for x in lines ]
 dest = [ x.split(' ')[10:] for x in lines ]
 dest = dict(zip(nodes,dest))
 
-# Compacting the non-zero nodes, by all-pairs
+# Compacting the non-zero nodes, by all-pairs (Floyd-Warshall)
 
 Dist={}
 for x in nodes:
@@ -30,13 +30,10 @@ for n in range(len(nodes)):
 
 index=0
 INodes=[]
-Nodes=[]
 Index={'AA':0}
 Flow={}
 for n,f in zip(nodes,flow):
-  if f!=0: index += 1; Nodes.append(n); INodes.append(index); Flow[index]=f; Index[n]=index
-
-# print(Nodes)
+  if f!=0: index += 1; INodes.append(index); Flow[index]=f; Index[n]=index
 # print(INodes)
 
 IDist = {}
@@ -49,10 +46,11 @@ for n1,f1 in zip(nodes,flow):
 # print(Dist)
 # print(IDist)
 
-@lru_cache
+# Solving by direct extension (not really great...)
+
 def explore(minute,node,eminute,enode,open_nodes,num_open_nodes):
   if eminute>minute: minute,node,eminute,enode=eminute,enode,minute,node
-  if minute<=1 or num_open_nodes==len(Nodes): return 0
+  if minute<=1 or num_open_nodes==len(INodes): return 0
   ans = 0
   for x in INodes:
     if x != node and x != enode and open_nodes&(2**x)==0:
