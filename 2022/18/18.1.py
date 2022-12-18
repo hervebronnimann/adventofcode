@@ -1,8 +1,4 @@
-from collections import defaultdict
-from functools import lru_cache
-
 def parse(l): x,y,z=l.split(','); return (1+int(x),1+int(y),1+int(z))
-# lines = list(map(parse, open("example.txt").read().strip().split('\n')))
 lines = list(map(parse, open("input.txt").read().strip().split('\n')))
 print(list(lines))
 
