@@ -1,7 +1,7 @@
 def p(l,k): return int(l[k])
 def parse(l): l=l.split(' '); return (p(l,1), p(l,6), p(l,12),  p(l,18),  p(l,21), p(l,27),  p(l,30))
-lines = list(map(parse, open("example.txt").read().strip().split('\n')))
-# lines = list(map(parse, open("input.txt").read().strip().split('\n')))
+# lines = list(map(parse, open("example.txt").read().strip().split('\n')))
+lines = list(map(parse, open("input.txt").read().strip().split('\n')))
 lines=lines[0:3]
 print(lines)
 
@@ -21,8 +21,8 @@ def dominated(s1,s2):
 
 def qappend(dr,ds,q,qm,s):
   if s[0]==33: qm.append(s[8]); return
-  # first prune fully dominated set - s[5:] is the set of resources availables
-  t1 = tuple(s[1:5]); t2 = tuple(s[5:])
+  # first prune fully dominated set - s[5:9] is the set of resources availables
+  t1 = tuple(s[1:5]); t2 = tuple(s[5:9])
   if t1 in dr:
     for s2 in dr[t1]:
       if dominated(t2,s2): return  # we have same number of robots and fewer resources
@@ -51,10 +51,8 @@ def geode(b):
     # print(f'Min {s[0]}: robots ore {s[1]} clay {s[2]} obs {s[3]} geode {s[4]},\t ore {s[5]} clay {s[6]} obs {s[7]} geode {s[8]}')
     # robot production - four choices, or a choice to do nothing
     # we dont need more robots that we can spend (since we can only build one robot per turn)
-    ro,rg=0,0
-    if b[6]<=s[7] and b[5]<=s[5] and m<32: qappend(dr,ds,q,qm,create_geode_robot(s,b)); rg=1
-    if b[4]<=s[6] and b[3]<=s[5] and s[3]<=b[6] and m<32: qappend(dr,ds,q,qm,create_obs_robot(s,b)); ro=1
-    if ro!=0 or rg!=0: continue
+    if b[6]<=s[7] and b[5]<=s[5] and m<32: qappend(dr,ds,q,qm,create_geode_robot(s,b))
+    if b[4]<=s[6] and b[3]<=s[5] and s[3]<=b[6] and m<32: qappend(dr,ds,q,qm,create_obs_robot(s,b))
     if b[2]<=s[5] and s[2]<=b[4] and m<32: qappend(dr,ds,q,qm,create_clay_robot(s,b))
     if b[1]<=s[5] and s[1]<=b35 and m<32: qappend(dr,ds,q,qm,create_ore_robot(s,b)) 
     qappend(dr,ds,q,qm,production(s))
