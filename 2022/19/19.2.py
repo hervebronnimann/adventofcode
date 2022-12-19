@@ -23,16 +23,16 @@ def qappend(dr,ds,q,qm,s):
   if s[0]==33: qm.append(s[8]); return
   # first prune fully dominated set - s[5:9] is the set of resources availables
   t1 = tuple(s[1:5]); t2 = tuple(s[5:9])
-  if t1 in dr:
-    for s2 in dr[t1]:
-      if dominated(t2,s2): return  # we have same number of robots and fewer resources
-  else:
-    dr[t1]=[] 
+  for t in dr:
+    if dominated(t1,t):
+      for s2 in dr[t]:
+        if dominated(t2,s2): return  # we have same number of robots and fewer resources
   # if t2 in ds:
   #   for s1 in ds[t2]:
   #     if dominated(t1,s1): return  # we have same number of resources and fewer robots
   # else:
   #   ds[t2]=[] 
+  if t1 not in dr: dr[t1]=[] 
   dr[t1].append(t2)
   # ds[t2].append(t1)
   q.append(s)
