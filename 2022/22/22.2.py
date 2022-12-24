@@ -41,10 +41,10 @@ def adv(grid,N,x,y,dx,dy):
       return (x+dx,y,dx,dy)
     if y<N and dx==-1: # 1, connects to 4 (left)
       assert 0<=y and x==N, f'Position ({x},{y}) direction ({dx},{dy})'
-      y=3*N-1-y; x=0; dx=1
+      y=3*N-1-y; x=0; dx,dy=1,0
     elif y<N and dx==1: # 2, connects to 5 (right)
       assert 0<=y and x==3*N-1, f'Position ({x},{y}) direction ({dx},{dy})'
-      y=3*N-1-y; x=2*N-1; dx=-1
+      y=3*N-1-y; x=2*N-1; dx,dy=-1,0
     elif y<2*N and dx==-1: # 3, connects to 4 (top)
       assert N<=y and x==N, f'Position ({x},{y}) direction ({dx},{dy})'
       x=y-N; y=2*N; dx,dy=0,1
@@ -53,10 +53,10 @@ def adv(grid,N,x,y,dx,dy):
       x=y+N; y=N-1; dx,dy=0,-1
     elif y<3*N and dx==-1: # 4, connects to 1 (left)
       assert 2*N<=y and x==0, f'Position ({x},{y}) direction ({dx},{dy})'
-      x+=N; y=N-1; dx=1
+      y=3*N-1-y; x=N; dx=1
     elif y<3*N and dx==1: # 5, connects to 2 (right)
       assert 2*N<=y and x==2*N-1, f'Position ({x},{y}) direction ({dx},{dy})'
-      y=3*N-1-y; x+=N; dx=-1
+      y=3*N-1-y; x=3*N-1; dx,dy=-1,0
     elif y<4*N and dx==-1: # 6, connects to 1 (top)
       assert 3*N<=y and x==0, f'Position ({x},{y}) direction ({dx},{dy})'
       x=y-2*N; y=0; dx,dy=0,1
@@ -74,7 +74,7 @@ def adv(grid,N,x,y,dx,dy):
       y=x+N; x=N; dx,dy=1,0
     elif x<N and dy==1: # 6, connects to 2 (top)
       assert 0<=x and y==4*N-1, f'Position ({x},{y}) direction ({dx},{dy})'
-      x=x+2*N; y=0; dy=1
+      x=x+2*N; y=0; dx,dy=0,1
     elif x<2*N and dy==-1: # 1, connects to 6 (left)
       assert N<=x and y==0, f'Position ({x},{y}) direction ({dx},{dy})'
       y=x+2*N; x=0; dx,dy=1,0
@@ -83,7 +83,7 @@ def adv(grid,N,x,y,dx,dy):
       y=x+2*N; x=N-1; dx,dy=-1,0
     elif x<3*N and dy==-1: # 2, connects to 6 (bottom)
       assert 2*N<=x and y==0, f'Position ({x},{y}) direction ({dx},{dy})'
-      x=x-2*N; y=4*N-1; dy=-1
+      x=x-2*N; y=4*N-1; dx,dy=0,-1
     elif x<3*N and dy==1: # 2, connects to 3 (right)
       assert 2*N<=x and y==N-1, f'Position ({x},{y}) direction ({dx},{dy})'
       y=x-N; x=2*N-1; dx,dy=-1,0
@@ -111,8 +111,7 @@ for i in inst:
        x,y=x2,y2
        # print(f'Advance {(x,y)}')
   else:
-    print("OOOPS INST")
-    exit(-1)
+    assert False, f'BAD INSTRUCTION {i}'   
 
 dir = 0 if dx==1 else 1 if dy==1 else 2 if dx==-1 else 3
 print(1000*(y+1)+4*(x+1)+dir)
