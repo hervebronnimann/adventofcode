@@ -18,8 +18,6 @@ for x in lines:
     elif x[j]=='v': bliz.append((x[j],i,j,1,0))
   i+=1
 N,M=i-1,M-1
-print((N,M))
-print('\n'.join([''.join(x) for x in grid]))
 
 def move_bliz(bliz):
   b = set()
@@ -33,22 +31,11 @@ def move_bliz(bliz):
     b.add((i,j))
   return b
 
-def print_bliz(bliz):
-  grid2=deepcopy(grid)
-  for x,i,j,di,dj in bliz:
-    if grid2[i][j]=='.' or x=='#':
-      grid2[i][j] = x
-    else:
-      n = 1 if grid2[i][j] in 'v^<>' else int(grid2[i][j])
-      grid2[i][j] = str(n+1)
-  print('\n'.join([''.join(x) for x in grid2]))
-
 def solve(bliz):
   n,q=0,[(0,1)]
   while len(q)>0:
     n += 1
     b = move_bliz(bliz)
-    if example: print_bliz(bliz)
     q2=set()
     for i,j in q:
       for di,dj in (0,0), (1,0), (-1,0), (0,1), (0,-1):

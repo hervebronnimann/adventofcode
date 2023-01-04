@@ -18,8 +18,6 @@ for x in lines:
     elif x[j]=='v': bliz.append((x[j],i,j,1,0))
   i+=1
 N,M=i-1,M-1
-print((N,M))
-print('\n'.join([''.join(x) for x in grid]))
 
 def move_bliz(bliz):
   b = set()
@@ -36,7 +34,6 @@ def move_bliz(bliz):
 def solve(bliz):
   n,q=0,[(0,1,0)]
   while len(q)>0:
-    # print((n,len(q),q))
     n += 1
     b = move_bliz(bliz)
     q2=set()
@@ -47,15 +44,11 @@ def solve(bliz):
         if (i+di,j+dj) in b: continue
         if i+di==0:
           if j+dj!=1: continue
-          if m==1 and (di,dj)!=(0,0):
-            dm=1
-            # print(f'Reached top, {m} ({di},{dj})')
+          if m==1 and (di,dj)!=(0,0): dm=1
         if i+di==N:
           if j+dj!=M-1: continue
           if m==2: return n
-          if m==0 and (di,dj)!=(0,0):
-            dm=1
-            # print(f'Reached bottom, {m} ({di},{dj})')
+          if m==0 and (di,dj)!=(0,0): dm=1
         q2.add((i+di,j+dj,m+dm))
     q=q2
 
