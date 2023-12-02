@@ -1,0 +1,9 @@
+BRUTAL part 2
+
+Ouch - python not ready at all!  String functions, strip, slicing, not clear at all.
+
+In retrospect the meaning is clear. But ignoring the warning bells was probably reasonable.
+First v ersion of digitize was forward only, then backward is not hard to do once you 
+
+Too many errors entering (mistyping, removing last char) leading to waiting 5m penalty in the last submission.
+
