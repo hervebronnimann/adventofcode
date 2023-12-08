@@ -14,18 +14,25 @@ for x in input[2:]:
 
 ins = input[0]
 
-pos = list(start)
-reached = False
-steps = 0
-while not reached:
-  for p in ins:
-    newpos = []
-    Reached = True
-    steps += 1
-    for x in pos:
-      y = left[x] if p == "L" else right[x]
-      if y not in end: reached = False
-      newpos.append(y)
-    pos = newpos
+steps = {}
+for s in start:
+  x = s
+  st = 0
+  while x not in end:
+    for p in ins:
+      st += 1
+      x = left[x] if p == "L" else right[x]
+      if x in end: break
+    steps[s] = st 
 
-print(steps)
+
+def computeGCD(x, y):
+    while(y): x, y = y, x % y
+    return abs(x)
+
+G = 1
+for x in steps.values():
+  print(G,x)
+  G = G * x // computeGCD(G, x)
+
+print(G)

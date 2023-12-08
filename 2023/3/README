@@ -1,0 +1,4 @@
+
+For part 2, I tried to identify the pairs
+(if line diff is at most 2, and if same line, etc)
+Way too complicated case analysis.
