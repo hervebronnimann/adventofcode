@@ -5,7 +5,7 @@ def diff(s): return [ s[i] - s[i-1] for i in range(1,len(s))]
 res = 0
 for x in input:
   y = [x]
-  while not all(z == 0 for z in y[-1]): 
+  while any(y[-1]):
     y.append(diff(y[-1]))
   y[-1].append(0)
   while len(y) > 1:
