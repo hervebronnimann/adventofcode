@@ -1,4 +1,3 @@
-input = open("example.txt",'r').read().strip().split('\n')
 input = open("input.txt",'r').read().strip().split('\n')
 m = len(input); n = len(input[0])
 
