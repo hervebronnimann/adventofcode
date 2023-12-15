@@ -1,3 +1,4 @@
+# example = open("example.txt",'r').read().strip().split(',')
 input = open("input.txt",'r').read().strip().split(',')
 
 def HASH(x: str):
@@ -6,7 +7,7 @@ def HASH(x: str):
         res += ord(c); res *= 17; res %= 256
     return res
 
-# print(sum([HASH(x) for x in input]))
+# print([HASH(x[0:2]) for x in example])
 
 Boxes = []
 for i in range(256):
