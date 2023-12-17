@@ -1,6 +1,4 @@
 import sys
-from copy import deepcopy
-
 sys.setrecursionlimit(10000)
 
 input = open("input.txt",'r').read().strip().split('\n')
@@ -34,10 +32,7 @@ def cast(g,i,j,di,dj):
 def solve(i,j,di,dj):
     g = create_grid(n,m)
     cast(g,i,j,di,dj)
-    res = 0
-    for i,j in g.keys():
-        if len(g[(i,j)]) > 0: res += 1
-    return res
+    return sum([len(g[(i,j)]) > 0 for i,j in g.keys()])
 
 energized = []
 for i in range(n):
