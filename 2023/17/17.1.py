@@ -8,6 +8,7 @@ n = len(input); m = len(input[0])
 diri = [ 0, 1, 0, -1 ]
 dirj = [ 1, 0, -1, 0 ]
 
+# Graph of (i,j,dir) -> (i+di,j+dj,dir+/-1): cost
 g = {}
 
 def edge(i,j,d,di,dj):
@@ -28,33 +29,25 @@ for i in range(n):
             edge(i,j,d,1*diri[d],1*dirj[d])
             edge(i,j,d,2*diri[d],2*dirj[d])
             edge(i,j,d,3*diri[d],3*dirj[d])
-# print(g)
 
+# Graph traversal for distance costs
 def dijkstra(src):
     visited = set(src)
-    parentsMap = {}
     pq = []
-    nodeCosts = defaultdict(lambda: float('inf'))
-    nodeCosts[src] = 0
+    costs = defaultdict(lambda: float('inf'))
+    costs[src] = 0
     heap.heappush(pq, (0, src))
-
     while pq:
-        # go greedily by always extending the shorter cost nodes first
         _, node = heap.heappop(pq)
         visited.add(node)
-
         for i,j,d,cost in g[node]:
-            adjNode = (i,j,d)
-            if adjNode in visited:	continue
-
-            newCost = nodeCosts[node] + cost
-            if nodeCosts[adjNode] > newCost:
-                parentsMap[adjNode] = node
-                nodeCosts[adjNode] = newCost
-                heap.heappush(pq, (newCost, adjNode))
-                # print(newCost, adjNode)
-
-    return nodeCosts
+            adj = (i,j,d)
+            if adj in visited:	continue
+            newCost = costs[node] + cost
+            if costs[adj] > newCost:
+                costs[adj] = newCost
+                heap.heappush(pq, (newCost, adj))
+    return costs
 
 dists = dijkstra((0,0,0))
 print(min([dists[(n-1,m-1,d)] for d in range(4)]))
