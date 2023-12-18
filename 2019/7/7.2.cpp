@@ -4,14 +4,16 @@
 #include <string>
 #include <vector>
 
-struct {
-std::vector<int> o;
+struct State {
+  std::vector<int> input;
+  std::vector<int> output;
   bool done{false};
   int i, j;
+};
 
-run(const int positions[], int size, std::vector<int> input) {
+State run(const int positions[], int size, State input) {
   int inp = -1;
-  std::vector<int> output;
+  State state;
   std::vector<int> p(positions, positions+size);
   for (int i=0; i < size; ++i) {
     auto code=p[i]%100;
@@ -33,11 +35,18 @@ run(const int positions[], int size, std::vector<int> input) {
       if (j>=size) return -1;
       if (++inp < input.size())
         p[j] = input[inp];
+      else {
+        state.input.clear();
+        state.done = false;
+        state.i = i;
+        state.j = j;
+        return state;
+      }
     } else if (code==4) {
       if (size<=i+1) return -1;
       auto j=p[++i];
       if (j>=size) return -1;
-      output.push_back(p[j]);
+      output.o.push_back(p[j]);
     } else if (code==5) {
       if (size<=i+2) return -1;
       auto j=p[++i], k=p[++i];
@@ -60,14 +69,15 @@ run(const int positions[], int size, std::vector<int> input) {
       return -1;
     }
   }
-  return output;
+  state.done = true;
+  return state;
 }
 
 int main() {
   int amps[] = {5,6,7,8,9};
   int xmax = INT_MIN;
   do {
-      auto x = 0;
+      State x = { {0}, {}, false };
       for (int i = 0; i < 5; ++i)
         x = run(positions, size, {amps[i], x});
       if (x > xmax) xmax = x;
