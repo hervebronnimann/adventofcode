@@ -6,7 +6,6 @@ for rule in input[0].split('\n'):
     rule = re.sub('[{},]+', ' ', rule).strip()
     x = rule.split(' ')
     rules[ x[0] ] = x[1:]
-print(rules)
 
 def evalRule(r,x,m,a,s):
     if ':' not in r: return r
@@ -22,7 +21,6 @@ def evalRules(x,m,a,s):
             res = evalRule(r,x,m,a,s)
             if res:
                 if res in 'AR':
-                    print(' -> '.join(names + [res]))
                     return res
                 name = res; break
 
