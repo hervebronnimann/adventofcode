@@ -1,7 +1,7 @@
 import heapq as heap
 from collections import defaultdict
 
-input = open("input.txt",'r').read().strip().split('\n')
+input = open("example.txt",'r').read().strip().split('\n')
 n = len(input); m = len(input[0])
 print(n,m)
 
@@ -19,7 +19,7 @@ for i in range(n):
 print(i0,j0)
 
 # Create graph of 3x3 copies of the grid, centered at (i0,j0)
-k = 1
+k = 10
 def node(i,j):
     for x in range(-k,k+1):
         for y in range(-k,k+1):
@@ -76,11 +76,7 @@ def dijkstra(src):
 costs = dijkstra((i0,j0))  # ; print(costs)
 c = []
 for d in range((k+1)*n+1):
-    res1 = sum([1 if costs[(x,y)]<=d and costs[(x,y)]%2==d%2 else 0 for x,y in costs if x in range(i0,i0+n) and y in range(j0,j0+n)])
-    res2 = sum([1 if costs[(x,y)]<=d and costs[(x,y)]%2==d%2 else 0 for x,y in costs if x in range(i0-n-1,i0+1) and y in range(j0,j0+n)])
-    res3 = sum([1 if costs[(x,y)]<=d and costs[(x,y)]%2==d%2 else 0 for x,y in costs if x in range(i0,i0+n) and y in range(j0-n-1,j0+1)])
-    res4 = sum([1 if costs[(x,y)]<=d and costs[(x,y)]%2==d%2 else 0 for x,y in costs if x in range(i0-n-1,i0+1) and y in range(j0-n-1,j0+1)])
-    c.append(res1 + res2 + res3 + res4)
+    c.append(sum([1 if costs[(x,y)]<=d and costs[(x,y)]%2==d%2 else 0 for x,y in costs]))
 print([(i,x) for i,x in enumerate(c)])
 
 x = 26501365
