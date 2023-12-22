@@ -12,45 +12,23 @@ dirj = [ 1, 0, -1, 0 ]
 # Graph of (i,j,dir) -> (i+di,j+dj,dir+/-1): cost
 g = {}
 
-# Find starting point
+# Find starting point, should be in the middle
 for i in range(n):
     for j in range(m):
         if input[i][j] == 'S': i0,j0 = i,j
-print(i0,j0)
-
-# Create graph of 3x3 copies of the grid, centered at (i0,j0)
-k = 10
-def node(i,j):
-    for x in range(-k,k+1):
-        for y in range(-k,k+1):
-            g[(i+x*n,j+y*m)] = list()
-
-def edge(i,j,d):
-    for x in range(-k,k+1):
-        for y in range(-k,k+1):
-            i2,j2 = (i+x*n+diri[d],j+y*m+dirj[d])
-            if (i2,j2) in g:
-                g[(i+x*n,j+y*m)].append((i2,j2))
+print(i0,j0, i0 == (n-1)/2, j0 == (m-1)/2)
 
 for i in range(n):
     for j in range(m):
         if input[i][j] == '#': continue
-        node(i,j)
-
-for i in range(n):
-    for j in range(m):
-        if input[i][j] == '#': continue
-        # Stitch the edges of the grid
-        if i == 0: edge(i,j,3)
-        if i == n-1: edge(i,j,1)
-        if j == 0: edge(i,j,2)
-        if j == m-1: edge(i,j,0)
+        g[(i,j)] = list()
         # Add edges between sandboxes inside the grid
         for d in range(4):
-            if i+diri[d] not in range(n): continue
-            if j+dirj[d] not in range(m): continue
-            if input[i+diri[d]][j+dirj[d]] == '#': continue
-            edge(i,j,d)
+            i2 = i+diri[d]; j2 = j+dirj[d]
+            if i2 not in range(n): continue
+            if j2 not in range(m): continue
+            if input[i2][j2] == '#': continue
+            g[(i,j)].append((i2,j2))
 
 # Graph traversal for distance costs
 def dijkstra(src):
@@ -73,32 +51,32 @@ def dijkstra(src):
 
 # From now on we must assume that n==m, and that n is odd, or else this won't work.
 # Extract number of nodes at given distance from each 4 corners, with same parity:
-costs = dijkstra((i0,j0))  # ; print(costs)
-c = []
-for d in range((k+1)*n+1):
-    c.append(sum([1 if costs[(x,y)]<=d and costs[(x,y)]%2==d%2 else 0 for x,y in costs]))
-print([(i,x) for i,x in enumerate(c)])
+c = dijkstra((i0,j0))
 
-x = 26501365
-p = x // n; q = x % n
-print(p,q,c[q],c[n+q])
+c0 = dijkstra((0,0))
+c1 = dijkstra((0,m-1))
+c2 = dijkstra((n-1,m-1))
+c3 = dijkstra((n-1,0))
 
-# Count per vertical slices of n nodes:
-#
-# 0 .................... (p*n,0) .. q
-# .      .                .    /
-# .      .                * /
-# .      .               /
-# .      .              /
-# . ..(p-1)*n,0) . .. q
-#
-#
-res = 0
-while p > 0:
-    res += c[q] + c[n+q]
-    res += (c[2*n-1] + c[2*n]) * ((p-1)//2) + (c[2*n-1] if (p-1)%2 == 1 else 0)
-    p -= 1
-res += c[q]
+ca = dijkstra((i0,0))
+cb = dijkstra((0,j0))
+cc = dijkstra((i0,m-1))
+cd = dijkstra((n-1,j0))
 
-# We're double counting the reachable ones on the axes, there are x//2 of these
-print(res - (x//2 * 4))
+D = 115
+N = (D-i0) // n; q = D % n
+print(N, q, q == i0, N%2==0, i0%2 == 1, q-1 == (n-3)/2, n+q-1 == (3*n-3)/2)
+
+def within(d,costs):
+    return sum([1 if costs[node]<=d and costs[node]%2==d%2 else 0 for node in costs])
+
+E = within(5*n,c)
+O = within(5*n+1,c)
+print(E,O)
+
+A = within(n+q-1,c0) + within(n+q-1,c1) + within(n+q-1,c2) + within(n+q-1,c3)
+B = within(q-1,c0) + within(q-1,c1) + within(q-1,c2) + within(q-1,c3)
+T = within(n,ca) + within(n,cb) + within(n,cc) + within(n,cd)
+print(A,B,T)
+
+print((N-1)*(N-1)* O + N*N*E + (N-1)*A + N*B + T)
