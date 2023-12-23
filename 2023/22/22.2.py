@@ -1,13 +1,13 @@
 import re
 from collections import defaultdict
 
-input = open("example.txt",'r').read().strip().split('\n')
+input = open("input.txt",'r').read().strip().split('\n')
 
 B = []; i = 0
 for brick in input:
     x1,y1,z1,x2,y2,z2 = [ int(x) for x in re.sub('[,~]', ' ',brick).strip().split(' ')]
-    s = chr(ord('A')+i)  # later, for input s = str(i)
-    #s = str(i)
+    # s = chr(ord('A')+i)  # later, for input s = str(i)
+    s = str(i)
     if x1==x2 and y1==y2:
         B.append( ('Z',x1,y1,z1,z2-z1,s) )
     elif z1==z2 and y1==y2:
@@ -23,7 +23,7 @@ B.sort(key = lambda x: x[3])
 # compute H map floor is at 0, and fall the blocks
 # as well as a directed graph of support, A->B if A supports B
 # as well as the reverse graph of support, B->A if B rests on A
-BRICKS = [node[5] for node in B]
+BRICKS = [ node[5] for node in B ]
 SUPP = { b:set() for b in BRICKS }
 REST = { b:set() for b in BRICKS }
 H = defaultdict(lambda: (0,None))
@@ -49,15 +49,23 @@ for i,(t,x,y,z,n,s) in enumerate(B):
             if b and H[(x,u)][0]==h-1: SUPP[b].add(s); REST[s].add(b)
             H[(x,u)] = (h,s)
 # print(H)
-print(SUPP)
-print(REST)
+# print(SUPP)
+# print(REST)
 
-res = 0
+dis = 0; res = 0
 for i,b in enumerate(BRICKS):
     wouldFall = set([b])
     for b2 in BRICKS[i+1:]:
-        if REST[b2].issubset(wouldFall):
+        if REST[b2] and REST[b2].issubset(wouldFall):
             wouldFall.add(b2)
-    res += len(wouldFall)-1
-    if len(wouldFall)>1: print(f"Block {b} would fall {wouldFall}")
-print(res)
+    if len(wouldFall)>1:
+        res += len(wouldFall)-1
+        # print(f"Block {b} would cause to fall {sorted(wouldFall)}")
+    else:
+        dis += 1
+        # print(f"Block {b} can be disintegrated safely")
+    if b == "413":
+        print(SUPP[b])
+        print(REST[b])
+        print(wouldFall)
+print(dis,res)

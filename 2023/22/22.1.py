@@ -7,7 +7,7 @@ B = []; i = 0
 for brick in input:
     x1,y1,z1,x2,y2,z2 = [ int(x) for x in re.sub('[,~]', ' ',brick).strip().split(' ')]
     s = chr(ord('A')+i)  # later, for input s = str(i)
-    #s = str(i)
+    s = str(i)
     if x1==x2 and y1==y2:
         B.append( ('Z',x1,y1,z1,z2-z1,s) )
     elif z1==z2 and y1==y2:
@@ -23,7 +23,7 @@ B.sort(key = lambda x: x[3])
 # compute H map floor is at 0, and fall the blocks
 # as well as a directed graph of support, A->B if A supports B
 # as well as the reverse graph of support, B->A if B rests on A
-BRICKS = [node[5] for node in B]
+BRICKS = [ node[5] for node in B ]
 SUPP = { b:set() for b in BRICKS }
 REST = { b:set() for b in BRICKS }
 H = defaultdict(lambda: (0,None))
@@ -52,10 +52,13 @@ for i,(t,x,y,z,n,s) in enumerate(B):
 # print(SUPP)
 # print(REST)
 
-res = set()
+res = set(BRICKS)
 for b in BRICKS:
-    if len(REST[b]) == 1:
-        for b2 in REST[b]:
-            res.add(b2)
-# print(res)
-print(len(B) - len(res))
+    for b2 in SUPP[b]:
+        if REST[b2] == set([b]):
+            res.discard(b)  # cannot be safely disintegrated
+    #if b in res:
+        # print(f"Block {b} can be disintegrated safely")
+print(SUPP["413"])
+print(REST["413"])
+print(len(res))
