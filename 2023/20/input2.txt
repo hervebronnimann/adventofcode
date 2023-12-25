@@ -1,6 +1,66 @@
+'rx': {'vr'},
+'ls': {'hz', 'bz', 'dv', 'bn', 'fx', 'px', 'th', 'hg'}
+'px': {'bn'}
+'jk': {'zb'}
+'pk': {'nv', 'sf'}
+'bj': {'cj'}
+'vg': {'gg'}
+'cj': {'kx', 'tx'}
+'sk': {'fx', 'ls'}
+'fl': {'th', 'ls'}
+'th': {'hg'}
+'pr': {'bj', 'tx'}
+'xv': {'fh'}
+'mh': {'fs', 'pj'}
+'jh': {'gk'}
+'jz': {'rg'}
+'hr': {'broadcaster', 'tx'}
+'kx': {'tx', 'jh'}
+'ql': {'pk', 'sf'}
+'gm': {'pr'}
+'hz': {'broadcaster', 'ls'}
+'gg': {'kr'}
+'xl': {'vg', 'sf'}
+'jx': {'ql', 'sf'}
+'kr': {'mv', 'sf'}
+'bn': {'bz'}
+'jt': {'gm'}
+'broadcaster': set(),
+'fx': {'fl'}
+'rt': {'vn'}
+'gk': {'hr'}
+'mv': {'jx'}
+'bz': {'sk'}
+'dv': {'px'}
+'rg': {'fs', 'jb'}
+'pj': {'fs', 'nk'}
+'kz': {'rt'}
+'ck': {'fv', 'ls'},
+'fg': {'ls'}
+'sf': {'mv', 'nv', 'fh', 'vg', 'xv', 'hp', 'gg'}
+'jb': {'fs', 'mh'}
+'dk': {'sf'}
+'hp': {'xv'}
+'tx': {'hr', 'gm', 'jt', 'jk', 'gk', 'jh', 'bj', 'zb', 'xt'}
+'nv': {'broadcaster', 'sf'}
+'fh': {'xl'}
+'xt': {'jk'}
+'hg': {'ck'}
+'zb': {'jt'},
+'fm': {'tx'}
+'pm': {'fs', 'jz'}
+'fv': {'hz', 'ls'}
+'vr': {'dk', 'fg', 'fm', 'pq'}}
+
 &vr -> rx
 
 &pq -> vr
+'pq': {'fs'},
+'fs': {'rt', 'dt', 'jz', 'nk', 'kz', 'vn', 'hd'}
+'dt': {'kz'}
+'vn': {'hd'}
+'hd': {'pm'}
+'nk': {'fs', 'broadcaster'},
 
 &fg -> vr
 

@@ -29,15 +29,16 @@ def push_button():
         m,s,i = sig.popleft()
         b[s] += 1
         type,dest = modules[m]
+        s2 = None
         if type == '=':
-            for d in dest: sig.append((d,s,m))
+            s2 = s
         if type == '%' and s == 'low':
             state[m] = 'off' if state[m] == 'on' else 'on'
             s2 = 'high' if state[m] == 'on' else 'low'
-            for d in dest: sig.append((d,s2,m))
         if type == '&':
             state[m][i] = s
             s2 = 'low' if all(x == 'high' for x in state[m].values()) else 'high'
+        if s2:
             for d in dest: sig.append((d,s2,m))
     return (b['low'],b['high'])
 

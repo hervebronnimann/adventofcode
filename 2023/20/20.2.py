@@ -3,7 +3,7 @@ import re
 input = open("input.txt",'r').read().strip().split('\n\n')
 
 modules = { 'rx' : ('>',[]) }
-state = { 'rx' : 0 }
+state = { 'rx' : 0, 'rxh' : 0 }
 inputs = { 'rx': set() }
 
 for config in input[0].split('\n'):
@@ -31,11 +31,14 @@ contrib = { x: set() for x in modules }
 def push_button():
     sig = deque([('broadcaster','low','button')])
     state['rx'] = 0
+    state['rxh'] = 0
     while sig:
         m,s,i = sig.popleft()
         b[s] += 1
         type,dest = modules[m]
-        s2 = s  # for broadcaster
+        s2 = None
+        if type == '=':
+            s2 = s
         if type == '%' and s == 'low':
             state[m] = 'off' if state[m] == 'on' else 'on'
             s2 = 'high' if state[m] == 'on' else 'low'
@@ -44,28 +47,22 @@ def push_button():
             s2 = 'low' if all(x == 'high' for x in state[m].values()) else 'high'
         if type == '>' and s == 'low':
             state['rx'] += 1
-        for d in dest:
-            contrib[d].update(contrib[m])
-            sig.append((d,s2,m))
+        if type == '>' and s == 'high':
+            state['rxh'] += 1
+        if s2:
+            for d in dest:
+                contrib[d].update(contrib[m])
+                sig.append((d,s2,m))
     return (b['low'],b['high'])
 
 # This takes forever - I've had it run till 155M and not found...
-def brute_force():
+def brute_force(N):
     n = 0
-    while state['rx']!=1:
-        n+=1; push_button()
+    while state['rx']!=1 and n <= N:
+        n+=1; push_button();
+        print(f'After {n}, rx received {state["rx"]} low signals and {state["rxh"]} high signals')
         if n == 1000: print(f"Part 1: {b['low']*b['high']}")
-    print(n)
+    return n
 
-brute_force()
-
-print(inputs)
-nodes = deque(('rx',0))
-level = { 'rx':0 }
-while nodes:
-    m,d = nodes.popleft()
-    if m in level: continue
-    for x in inputs[m]:
-        if x not in level:
-            nodes.append((x,d+1))
-print(level)
+brute_force(100000)
+print(contrib)
