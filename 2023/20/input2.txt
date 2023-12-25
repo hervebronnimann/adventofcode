@@ -1,0 +1,10 @@
+&vr -> rx
+
+&pq -> vr
+
+&fg -> vr
+
+&dk -> vr
+
+&fm -> vr
+
