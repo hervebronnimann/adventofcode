@@ -1,8 +1,9 @@
 from collections import deque
 
-input = open("example.txt",'r').read().strip().split('\n')
+input = open("input.txt",'r').read().strip().split('\n')
 input = [ list(row) for row in input ]
 n = len(input); m = len(input[0])
+print(n,m)
 
 # 0,1,2,3 -> R,D,L,U
 dir = { 'R':0, 'D':1, 'L':2, 'U':3 }
@@ -45,30 +46,38 @@ def find_next(i,j,d0):
         if input[u+diri[d]][v+dirj[d]] == '.': return(u,v,d)
         # For safety, check that we slide in the correct direction
         if dirc[d] == input[u+diri[d]][v+dirj[d]]: return(u,v,d)
-    return None
+    return
 
 # Starting at junction i,j in direction d, where is the next junction, and how far?
+input[n-1][m-2] = 'v'
 def find_next_junction(i,j,d):
     k = 1
     while True:
         w = find_next(i,j,d)
-        if not w: return (None,None,k)
+        if not w: return (i+diri[d],j+dirj[d],k+1)
         i,j,d = w
         k += 1
         if input[i][j] != '.': break
     return (i+diri[d],j+dirj[d],k+1)
 
-# Exploration:  make sure all of the above works
+# Construct the graph:
+graph = {}
 for i,j,d in V:
     for e in range(4):
         u,v = i+diri[d], j+dirj[d]
-        if input[u+diri[e]][u+dirj[e]] == '.':
+        s,t = u+diri[e], v+dirj[e]
+        if (s,t)!=(i,j) and input[s][t] == '.':
             u,v,k = find_next_junction(u,v,e)
-            if u:
-                print(f'From {i},{j} going {d}, {k} steps to {u},{v}')
-            else:
-                print(f'From {i},{j} going {d}, {k} steps to dead end')
-
+            if (i,j) not in graph: graph[(i,j)] = []
+            graph[(i,j)].append((u,v,k))
+            print(f'From {i},{j} going {d}, {k} steps to {u},{v}')
 
 # Compute distances between the junctions, while obeying
-src = (0,1); dst = (n,m-2)
+def dfs(i,j):
+    if (i,j)==(n-1,m-2):
+        return 0
+    dist = 0
+    for u,v,k in graph[(i,j)]:
+        dist = max(dist, dfs(u,v)+k)
+    return dist
+print(dfs(0,1))
