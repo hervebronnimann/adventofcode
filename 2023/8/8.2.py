@@ -1,5 +1,6 @@
+import math
+
 input = open("input.txt",'r').read().strip().split('\n')
-# input = [ x.split(" ") for x in open("input.txt",'r').read().strip().split('\n') ]
 
 left = {}
 right = {}
@@ -23,16 +24,11 @@ for s in start:
       st += 1
       x = left[x] if p == "L" else right[x]
       if x in end: break
-    steps[s] = st 
-
-
-def computeGCD(x, y):
-    while(y): x, y = y, x % y
-    return abs(x)
+    steps[s] = st
 
 G = 1
 for x in steps.values():
   print(G,x)
-  G = G * x // computeGCD(G, x)
+  G = G * x // abs(math.gcd(G, x))
 
 print(G)

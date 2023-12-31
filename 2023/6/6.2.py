@@ -1,7 +1,7 @@
 #example
-time = [ int(k) for k in "71530".split()]
-dist = [ int(k) for k in "940200".split()]
-print(time, dist)
+# time = [ int(k) for k in "71530".split()]
+# dist = [ int(k) for k in "940200".split()]
+# print(time, dist)
 
 #input
 time = [ int(k) for k in "54708275".split()]
