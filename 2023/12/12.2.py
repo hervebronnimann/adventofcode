@@ -21,7 +21,7 @@ def n0(x:str,n:tuple):
   return 0
 
 def num(x:str):
-  s1,n1 = x.split(" ")
+  s1,n1 = x.split()
   n1 = [ int(x) for x in n1.split(',')]
   s,n = s1,n1
   for i in range(4):

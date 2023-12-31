@@ -6,10 +6,10 @@ def gravity(x:str):
     y[i] = 'O'*z.count('O') + '.'*z.count('.')
   return '#'.join(y)
 
-def transpose(input):
+def transpose(input:list):
   return ["".join(list(x)) for x in zip(*input)]
 
-def weight(input):
+def weight(input:list):
     return sum([(i+1)*x.count('O') for i,x in enumerate(input[-1::-1])])
 
 input = transpose(input)

@@ -9,7 +9,7 @@ for i in range(n):
     for j in range(m):
        g[(i,j)] = set()
 
-def cast(i,j,di,dj):
+def cast(i:int,j:int,di:int,dj:int):
     if i < 0 or i>=n: return
     if j < 0 or j>=m: return
     cycle = (di,dj) in g[(i,j)]

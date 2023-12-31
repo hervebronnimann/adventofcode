@@ -1,6 +1,5 @@
 from functools import cache
 
-input = open("example.txt",'r').read().strip().split('\n')
 input = open("input.txt",'r').read().strip().split('\n')
 
 def n0(x:str,n:list):
@@ -16,13 +15,11 @@ def n0(x:str,n:list):
   elif x[0]=='?':
     return n0(x[1:],n) + n0("#"+x[1:],n)
   return 0
-    
+
 
 def num(x:str):
-  s,n = x.split(" ")
+  s,n = x.split()
   n = [ int(x) for x in n.split(',')]
   return n0(s,n)
 
-#print(n0("?###????????", [3,2,1]))
-#print([(x,num(x)) for x in input])
 print(sum([num(x) for x in input]))

@@ -1,14 +1,14 @@
 input = open("input.txt",'r').read().strip().split('\n')
 m = len(input); n = len(input[0])
 
-def compute_index(input):
+def compute_index(input:list):
   i_index= []; shft = 0
   for i, x in enumerate(input):
     i_index.append(i+shft)
     if x == '.'*len(x): shft += 999999
   return i_index
 
-def transpose(input):
+def transpose(input:list):
   return ["".join(list(x)) for x in zip(*input)]
 
 idx = compute_index(input)
