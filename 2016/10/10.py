@@ -25,7 +25,7 @@ while q:
     lh = sorted(bot[b])
     lb,lo = low[b]
     hb,ho = high[b]
-    if lh[0]==17 and lh[1]==61: print(b)
+    if lh[0]==17 and lh[1]==61: print("Part 1:", b)
     if lo:
         bot[lb].append(lh[0])
         if len(bot[lb])>=2: q.append(lb)
@@ -37,4 +37,4 @@ while q:
     else:
         output[hb].append(lh[1])
 # print(bot)
-print(output['0'][0]*output['1'][0]*output['2'][0])
+print("Part 2:",output['0'][0]*output['1'][0]*output['2'][0])
