@@ -12,6 +12,11 @@ F2 = ('+cobalt', '+curium', '+plutonium', '+ruthenium')
 F3 = ('-cobalt', '-curium', '-plutonium', '-ruthenium')
 F4 = ()
 
+# Manually, mmmh....
+# Step 1: +prom to floor 2
+# 2 to 5: up cobalt, then curium+plutonium down to floor 2, and ruthenium to 3
+# 6 to :
+
 E = 0
 F = (F1,F2,F3,F4)
 
@@ -48,6 +53,7 @@ def nextfloor(e,f):
         for g in ne:
             # Don't carry stuff back to empty floors below.
             if g < e and all(len(f[k])==0 for k in range(0,e)): continue
+            # Don't carry one up (or two down) if you already carried two (or one down)
             if g>e and already2 and len(h)==1: continue
             if g<e and already1 and len(h)==2: continue
             y = [ sorted(list(f[x])+h) if x==g else nh if x == e else f[x] for x in [0,1,2,3] ]
@@ -71,11 +77,10 @@ def hashpair(f):
 def hashable(e,f):
     return (e,hashpair(f[0]),hashpair(f[1]),hashpair(f[2]),hashpair(f[3]))
 
-m,visited = 1,set([hashable(E,F)])
 q = deque([(E,F,0)])
+m,visited = 1,set([hashable(E,F)])
 while q:
     e,f,i = q.popleft()
-    visited.add(hashable(e,f))
     if len(visited)%100==0 and len(visited)>m:
         print("Distance ",i,"Visited ",len(visited))
         m = len(visited)
@@ -87,6 +92,7 @@ while q:
             print("Part 1:",i+1); q=[]; break
         if hashable(g,h) not in visited:
             # print("Queuing: step",i+1,g,h)
+            visited.add(hashable(g,h))
             q.append((g,h,i+1))
 
 print("Visited:",len(visited))
