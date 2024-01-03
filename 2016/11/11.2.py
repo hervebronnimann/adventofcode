@@ -2,10 +2,10 @@ from copy import deepcopy
 from collections import deque
 
 # Example:
-F1 = ['-hydrogen', '-lithium']
-F2 = ['+hydrogen']
-F3 = ['+lithium']
-F4 = []
+# F1 = ['-hydrogen', '-lithium']
+# F2 = ['+hydrogen']
+# F3 = ['+lithium']
+# F4 = []
 
 F1 = ('+promethium', '-promethium','+dilithium','-dilithium','+elerium','-elerium')
 F2 = ('+cobalt', '+curium', '+plutonium', '+ruthenium')
@@ -78,18 +78,20 @@ def hashable(e,f):
     return (e,hashpair(f[0]),hashpair(f[1]),hashpair(f[2]),hashpair(f[3]))
 
 q = deque([(E,F,0)])
-m,visited = 1,set([hashable(E,F)])
+m,mult,visited = 1,100,set([hashable(E,F)])
 while q:
     e,f,i = q.popleft()
-    if len(visited)%100==0 and len(visited)>m:
+    if len(visited)%mult==0 and len(visited)>m:
         print("Distance ",i,"Visited ",len(visited))
         m = len(visited)
+        if m > 1000: mult = 1000
+        if m > 10000: mult = 10000
     # print(f"Now[{i}]: {e} {f}")
     for g,h in nextfloor(e,f):
         # print("Next:",i+1,g,h)
         if endstate(g,h):
             # print("Reaching: step",i+1,g,h)
-            print("Part 1:",i+1); q=[]; break
+            print("Part 2:",i+1); q=[]; break
         if hashable(g,h) not in visited:
             # print("Queuing: step",i+1,g,h)
             visited.add(hashable(g,h))
