@@ -1,15 +1,12 @@
-from functools import cache
+from collections import deque
 import hashlib
 import re
-from collections import deque
 
-#input = 'abc'
 input = 'cuanljph'
 
 hexdigit = "0123456789abcdef"
 str5 = { c:"".join([c]*5) for c in hexdigit }
 
-# @cache
 def md5salt(x):
     h = hashlib.md5((input+str(x)).encode('utf-8')).hexdigest()
     for _ in range(2016):
