@@ -6,3 +6,108 @@ and topological sorting in awk was an interesting exercise.
 
 Over time, though, python emerges as the most supple, easiest, and convenient language for this.  Manipulating
 strings, grids, arrays, and tuples is what we need.
+
+## Useful Python constructs
+
+### Logic / Hackers' delights:
+
+```
+def bitsoncount(x):
+    return bin(x).count("1")
+
+def popcount(x):
+    assert 0 <= x < 0x100000000
+    x = x - ((x >> 1) & 0x55555555)
+    x = (x & 0x33333333) + ((x >> 2) & 0x33333333)
+    return (((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) & 0xffffffff) >> 24
+```
+
+### Arithmetic:
+
+```
+def egcd(a, b):
+    if a == 0 : return b,0,1
+    g,x1,y1 = egcd(b%a, a)
+    x = y1 - (b//a) * x1
+    y = x1
+    return g,x,y
+```
+
+```
+from functools import reduce
+
+def crm(m, a):
+    s = 0
+    p = reduce(lambda p, b: p*b, m)
+    for m_i, a_i in zip(m, a):
+        p_i = p // m_i
+        s += a_i * egcd(p_i, m_i)[1] * p_i
+    return s % p
+```
+
+### Grids
+
+Use `yield` and/or `@cache` for generating infinite grids.
+
+```
+dir = { 'R':0, 'D':1, 'L':2, 'U':3 }
+diri = [ 0, 1, 0, -1 ]
+dirj = [ 1, 0, -1, 0 ]
+
+def neighbors4(i,j):
+    for d in range(4): yield (i+diri[d], j+dirj[d])
+```
+
+```
+dir8 = { 'E':0, 'SE':1, 'S':2, 'SW':3, 'W':4, 'NW':5, 'N':6, 'NE':7 }
+dir8i = [ 0, 1, 1,  1,  0, -1, -1, -1 ]
+dir8j = [ 1, 1, 0, -1, -1, -1,  0,  1 ]
+
+def neighbors8(i,j):
+    for d in range(8): yield (i+dir8i[d], j+dir8j[d])
+```
+
+### Graphs
+
+With a graph with a way to provide adjacent nodes:
+
+```
+from collections import deque
+
+def bfs(src):  # (src,dst):
+    visited = set([src])
+    pq = deque()
+    pq.append((0,src))
+    while pq:
+        i,node = pq.popleft()
+        for adj in ...:
+            if adj in visited: continue
+            # if adj == dst: return i+1
+            visited.add(adj)
+            pq.append((i+1, adj))
+    return i # float('inf')
+```
+
+With a graph with a way to provide adjacent nodes with cost:
+
+```
+import heapq as heap
+from collections import defaultdict
+
+def dijkstra(src):
+    visited = set(src)
+    pq = []
+    costs = defaultdict(lambda: float('inf'))
+    costs[src] = 0
+    heap.heappush(pq, (0, src))
+    while pq:
+        _, node = heap.heappop(pq)
+        visited.add(node)
+        for adj,cost in ...:
+            if adj in visited:	continue
+            newCost = costs[node] + cost
+            if costs[adj] > newCost:
+                costs[adj] = newCost
+                heap.heappush(pq, (newCost, adj))
+    return costs
+```
