@@ -1,0 +1,26 @@
+Let n[i] and p[i] be the number of positions and initial position of disk i.
+Pushing the button at time t, to go through disk i at time t+i, we must be in a position multiple of n[i].
+But disk i at time t+i is in position (p[i]+t+i) mod n[i]. So p[i]+t+i=0 mod n[i].
+Because all the n[i] are prime, the Chinese Remainder Theorem applies and:
+   11 + t = 0 mod 13        t = 2 mod 13
+   17 + t = 0 mod 17        t = 0 mod 17
+   20 + t = 0 mod 19  ====> t = 18 mod 19
+   5  + t = 0 mod 7         t = 2 mod 7
+   5  + t = 0 mod 5         t = 0 mod 5
+   17 + t = 0 mod 3         t = 2 mod 3
+
+The solutions are 13*17*19*7*5*3*(a/13+b/19+c/7+d/3) mod (13*17*19*7*5*3), where
+  a is 2 * (inverse of 17*19*7*5*3 mod 13)
+  b is 18 * (inverse of 13*17*7*5*3 mod 19)
+  c is 2 * (inverse of 13*17*19*5*3 mod 7)
+  d is 2 * (the inverse of 13*17*19*7*5 mod 3)
+
+Computing the inverses is done by the extended euclid algorithm for GCD (those are
+called Bezout coefficients), it's the second element (x) of the return tuple:
+
+def egcd(a, b): 
+    if a == 0 : return b,0,1
+    gcd,x1,y1 = egcd(b%a, a) 
+    x = y1 - (b//a) * x1 
+    y = x1 
+    return gcd,x,y  # a*x+b*y==gcd
