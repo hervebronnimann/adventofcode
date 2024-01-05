@@ -9,7 +9,7 @@ strings, grids, arrays, and tuples is what we need.
 
 ## Useful Python constructs
 
-### Logic / Hackers' delights:
+### Logic / Sets / Hackers' delights:
 
 ```
 def bitsoncount(x):
@@ -20,6 +20,15 @@ def popcount(x):
     x = x - ((x >> 1) & 0x55555555)
     x = (x & 0x33333333) + ((x >> 2) & 0x33333333)
     return (((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) & 0xffffffff) >> 24
+```
+
+```
+def powerset(s):
+    x = len(s)
+    masks = [1 << i for i in range(x)]
+    for i in range(1 << x):
+        yield ([ss for mask, ss in zip(masks, s) if i & mask], [ss for mask, ss in zip(masks, s) if not i & mask])
+
 ```
 
 ### Arithmetic:
@@ -65,6 +74,11 @@ dir8j = [ 1, 1, 0, -1, -1, -1,  0,  1 ]
 
 def neighbors8(i,j):
     for d in range(8): yield (i+dir8i[d], j+dir8j[d])
+```
+
+```
+def transpose(grid):
+  return ["".join(list(x)) for x in zip(*grid)]
 ```
 
 ### Graphs
