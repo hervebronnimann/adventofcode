@@ -81,6 +81,29 @@ def transpose(grid):
   return ["".join(list(x)) for x in zip(*grid)]
 ```
 
+### Algebra
+
+### Intervals
+
+```
+def mergeIntervals(arr):
+    if len(arr)==0: return arr
+    # Sorting based on the increasing order of the start intervals
+    arr.sort(key=lambda x: x[0])
+    # Stores index of last element in output array
+    out = [arr[0]]
+    print(out)
+    # Traverse all input Intervals starting from second interval
+    for i,(u,v) in enumerate(arr[1:]):
+        x,y = out[-1]
+        # If this is not first Interval and overlaps with the previous one,
+        if y >= u:
+            # Merge previous and current intervals
+            out[-1] = (x,max(v,y))
+        else:
+            out.append([u,v])
+    return out
+```
 ### Graphs
 
 With a graph with a way to provide adjacent nodes:
