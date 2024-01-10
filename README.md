@@ -22,6 +22,9 @@ def popcount(x):
     return (((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) & 0xffffffff) >> 24
 ```
 
+For enumerating pairs, or simpler combinations, simply do a double loop.
+But for all subsets, one can use:
+
 ```
 def powerset(s):
     x = len(s)
@@ -30,6 +33,8 @@ def powerset(s):
         yield ([ss for mask, ss in zip(masks, s) if i & mask], [ss for mask, ss in zip(masks, s) if not i & mask])
 
 ```
+In general, the [itertools-recipes](https://docs.python.org/3/library/itertools.html#itertools-recipes) have
+a great set of nifty functions.
 
 ### Arithmetic:
 
