@@ -1,9 +1,7 @@
 import itertools
 
-grid = []
-with open("input.txt",'r') as f:
-  for s in f:
-    grid.append(s.strip())
+grid = open("example.txt",'r').read().strip().split('\n')
+print(grid)
 
 def find_xmas(i,j):
     if i==0 and j==0: return 0
