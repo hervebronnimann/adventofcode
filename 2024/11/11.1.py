@@ -16,5 +16,5 @@ for i in range(25):
     for x in input:
         r = r + evolve(x)
     input = r
-    #print(input)
+
 print(len(input))
