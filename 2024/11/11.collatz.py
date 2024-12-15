@@ -1,5 +1,4 @@
 from collections import defaultdict
-import math
 import functools
 
 input={int(x):1 for x in "6 11 33023 4134 564 0 8922422 688775".split()}
@@ -13,7 +12,7 @@ def evolve(x):
         r = len(xx)//2
         return [int(xx[0:r]), int(xx[r:])]
     else:
-        return [x * 2024]
+        return [x * 121]
 
 for i in range(75):
     r = defaultdict(lambda: 0)
