@@ -95,8 +95,8 @@ def guess_digits_from(i):
         output = program(num)
         # The following test can't be output[-i-1] == ops[-i-1], it has to match the whole suffix.
         if output[-i-1:] == ops[-i-1:]:
-            return guess_digits_from(i+1)
-            break
+            if guess_digits_from(i+1):
+                return digits
     # If we can't find anything
     return None
 

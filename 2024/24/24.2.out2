@@ -1,0 +1,314 @@
+z00 evaluates to (x00 XOR y00)
+   and uses additionally
+-----------
+z01 evaluates to (wbd XOR dqq)
+   and uses additionally
+    wbd = x00 AND y00
+    dqq = x01 XOR y01
+-----------
+z02 evaluates to (vnc XOR msc)
+   and uses additionally
+    kwk = wbd AND dqq
+    mhb = y01 AND x01
+    vnc = kwk OR mhb
+    msc = y02 XOR x02
+-----------
+z03 evaluates to (prb XOR rvw)
+   and uses additionally
+    wdv = msc AND vnc
+    mcc = y02 AND x02
+    prb = wdv OR mcc
+    rvw = x03 XOR y03
+-----------
+z04 evaluates to (rcw XOR nfp)
+   and uses additionally
+    bhr = x03 AND y03
+    bbq = prb AND rvw
+    rcw = x04 XOR y04
+    nfp = bhr OR bbq
+-----------
+z05 evaluates to (rgq XOR svm)
+   and uses additionally
+    ppw = x04 AND y04
+    brg = nfp AND rcw
+    rgq = ppw OR brg
+    svm = y05 XOR x05
+-----------
+z06 evaluates to (pdf XOR wcw)
+   and uses additionally
+    skn = svm AND rgq
+    nbc = y05 AND x05
+    pdf = skn OR nbc
+    wcw = x06 XOR y06
+-----------
+z07 evaluates to (rnc XOR cqp)
+   and uses additionally
+    kwc = x06 AND y06
+    fcv = pdf AND wcw
+    rnc = y07 XOR x07
+    cqp = kwc OR fcv
+-----------
+z08 evaluates to (npf XOR ktj)
+   and uses additionally
+    rhs = y07 AND x07
+    hdk = cqp AND rnc
+    npf = rhs OR hdk
+    ktj = y08 XOR x08
+-----------
+z09 evaluates to (jfn XOR fmc)
+   and uses additionally
+    vjc = x08 AND y08
+    hdf = ktj AND npf
+    jfn = vjc OR hdf
+    fmc = y09 XOR x09
+-----------
+z10 evaluates to (vws XOR tbk)
+   and uses additionally
+    pdh = y09 AND x09
+    tjk = jfn AND fmc
+    vws = pdh OR tjk
+    tbk = x10 XOR y10
+-----------
+z11 evaluates to (kng XOR rjg)
+   and uses additionally
+    rwv = x10 AND y10
+    wvf = vws AND tbk
+    kng = y11 XOR x11
+    rjg = rwv OR wvf
+-----------
+z12 evaluates to (dnq XOR kjr)
+   and uses additionally
+    fpb = x11 AND y11
+    rpr = kng AND rjg
+    dnq = y12 XOR x12
+    kjr = fpb OR rpr
+-----------
+z13 evaluates to (ttw XOR ckr)
+   and uses additionally
+    qnv = kjr AND dnq
+    kkq = y12 AND x12
+    ttw = y13 XOR x13
+    ckr = qnv OR kkq
+-----------
+z14 evaluates to (mdg XOR tdb)
+   and uses additionally
+    dhr = x13 AND y13
+    phn = ttw AND ckr
+    mdg = y14 XOR x14
+    tdb = dhr OR phn
+-----------
+z15 evaluates to (fwr XOR cpv)
+   and uses additionally
+    wfh = x14 AND y14
+    wth = mdg AND tdb
+    fwr = x15 XOR y15
+    cpv = wfh OR wth
+-----------
+z16 evaluates to (kqk XOR rbr)
+   and uses additionally
+    dkk = y15 AND x15
+    pbd = cpv AND fwr
+    kqk = dkk OR pbd
+    rbr = x16 XOR y16
+-----------
+z17 evaluates to (gcc XOR dhd)
+   and uses additionally
+    bbm = rbr AND kqk
+    qbc = y16 AND x16
+    gcc = bbm OR qbc
+    dhd = x17 XOR y17
+-----------
+z18 evaluates to (dbd XOR tcb)
+   and uses additionally
+    bdv = gcc AND dhd
+    grk = x17 AND y17
+    dbd = bdv OR grk
+    tcb = y18 XOR x18
+-----------
+z19 evaluates to (dtn XOR bbc)
+   and uses additionally
+    djp = x18 AND y18
+    fwn = tcb AND dbd
+    dtn = y19 XOR x19
+    bbc = djp OR fwn
+-----------
+z20 evaluates to (wdd XOR shj)
+   and uses additionally
+    qrs = y19 AND x19
+    wnw = dtn AND bbc
+    wdd = x20 XOR y20
+    shj = qrs OR wnw
+-----------
+z21 evaluates to (cqf XOR mkw)
+   and uses additionally
+    bvw = shj AND wdd
+    gdg = y20 AND x20
+    cqf = bvw OR gdg
+    mkw = y21 XOR x21
+-----------
+z22 evaluates to (nnw XOR smn)
+   and uses additionally
+    brb = x21 AND y21
+    rjf = mkw AND cqf
+    nnw = brb OR rjf
+    smn = x22 XOR y22
+-----------
+z23 evaluates to (kph XOR hpw)
+   and uses additionally
+    jcb = smn AND nnw
+    dwt = x22 AND y22
+    kph = jcb OR dwt
+    hpw = y23 XOR x23
+-----------
+z24 evaluates to (nkr XOR ngq)
+   and uses additionally
+    qdg = hpw AND kph
+    cgq = x23 AND y23
+    nkr = x24 XOR y24
+    ngq = qdg OR cgq
+-----------
+z25 evaluates to (grm XOR fnp)
+   and uses additionally
+    vbc = x24 AND y24
+    swv = nkr AND ngq
+    grm = x25 XOR y25
+    fnp = vbc OR swv
+-----------
+z26 evaluates to (drg XOR bhw)
+   and uses additionally
+    ppj = fnp AND grm
+    hjr = x25 AND y25
+    drg = ppj OR hjr
+    bhw = x26 XOR y26
+-----------
+z27 evaluates to (qjd XOR kjh)
+   and uses additionally
+    nhq = bhw AND drg
+    cvj = x26 AND y26
+    qjd = y27 XOR x27
+    kjh = nhq OR cvj
+-----------
+z28 evaluates to (hfn XOR stf)
+   and uses additionally
+    frc = kjh AND qjd
+    chk = y27 AND x27
+    hfn = frc OR chk
+    stf = y28 XOR x28
+-----------
+z29 evaluates to (mdn XOR vnm)
+   and uses additionally
+    ftj = x28 AND y28
+    ksd = hfn AND stf
+    mdn = x29 XOR y29
+    vnm = ftj OR ksd
+-----------
+z30 evaluates to (jms XOR mpv)
+   and uses additionally
+    rfn = y29 AND x29
+    wnd = mdn AND vnm
+    jms = rfn OR wnd
+    mpv = x30 XOR y30
+-----------
+z31 evaluates to (rfq XOR dck)
+   and uses additionally
+    jkn = mpv AND jms
+    ktm = x30 AND y30
+    rfq = x31 XOR y31
+    dck = jkn OR ktm
+-----------
+z32 evaluates to (srp XOR kgv)
+   and uses additionally
+    ddd = y31 AND x31
+    spc = dck AND rfq
+    srp = x32 XOR y32
+    kgv = ddd OR spc
+-----------
+z33 evaluates to (qdt XOR vdk)
+   and uses additionally
+    tkn = srp AND kgv
+    bng = x32 AND y32
+    qdt = x33 XOR y33
+    vdk = tkn OR bng
+-----------
+z34 evaluates to (cdn XOR stb)
+   and uses additionally
+    rcb = qdt AND vdk
+    bps = y33 AND x33
+    cdn = x34 XOR y34
+    stb = rcb OR bps
+-----------
+z35 evaluates to (nmh XOR vvf)
+   and uses additionally
+    bpm = x34 AND y34
+    gjv = cdn AND stb
+    nmh = bpm OR gjv
+    vvf = x35 XOR y35
+-----------
+z36 evaluates to (tnk XOR fwh)
+   and uses additionally
+    pbv = nmh AND vvf
+    jrm = x35 AND y35
+    tnk = y36 XOR x36
+    fwh = pbv OR jrm
+-----------
+z37 evaluates to (jqt XOR jjs)
+   and uses additionally
+    rwt = y36 AND x36
+    tsn = fwh AND tnk
+    jqt = rwt OR tsn
+    jjs = x37 XOR y37
+-----------
+z38 evaluates to (gsb XOR pgb)
+   and uses additionally
+    qpr = x37 AND y37
+    rbm = jqt AND jjs
+    gsb = y38 XOR x38
+    pgb = qpr OR rbm
+-----------
+z39 evaluates to (bdr XOR fsp)
+   and uses additionally
+    hpf = pgb AND gsb
+    phv = x38 AND y38
+    bdr = y39 XOR x39
+    fsp = hpf OR phv
+-----------
+z40 evaluates to (nqp XOR sbn)
+   and uses additionally
+    fnr = fsp AND bdr
+    nrj = x39 AND y39
+    nqp = y40 XOR x40
+    sbn = fnr OR nrj
+-----------
+z41 evaluates to (kfv XOR jmc)
+   and uses additionally
+    bnb = nqp AND sbn
+    fpq = x40 AND y40
+    kfv = bnb OR fpq
+    jmc = x41 XOR y41
+-----------
+z42 evaluates to (vsd XOR cdq)
+   and uses additionally
+    psj = jmc AND kfv
+    qpv = x41 AND y41
+    vsd = psj OR qpv
+    cdq = y42 XOR x42
+-----------
+z43 evaluates to (jjm XOR pcj)
+   and uses additionally
+    sbh = cdq AND vsd
+    tcr = y42 AND x42
+    jjm = x43 XOR y43
+    pcj = sbh OR tcr
+-----------
+z44 evaluates to (ggt XOR mjm)
+   and uses additionally
+    tkj = x43 AND y43
+    kdt = jjm AND pcj
+    ggt = x44 XOR y44
+    mjm = tkj OR kdt
+-----------
+z45 evaluates to (sgk OR hww)
+   and uses additionally
+    sgk = mjm AND ggt
+    hww = x44 AND y44
+-----------
